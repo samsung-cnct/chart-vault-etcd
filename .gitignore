@@ -28,3 +28,10 @@ docs/_build/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
