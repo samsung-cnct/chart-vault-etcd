@@ -13,6 +13,6 @@ SOLAS is also an international maritime treaty to ensure ships comply with minim
 
 # Things to consider
 
-- You may want to update the teams [slack notifications](https://samsung-cnct.slack.com/apps/search?q=github) to notify developers of PR and issue activiy.
+- You may want to update the teams [slack notifications](https://samsung-cnct.slack.com/apps/search?q=github) to notify developers of PR and issue activiy. To do this you will need [Admin Privileges](https://help.github.com/articles/repository-permission-levels-for-an-organization/). To ensure that you are not the only one who can maintain these integrations, it is recommended that you grant a GitHub Team (e.g. `commontools`) permissions and not a single individual contributor.
 
 - You will likely need to configure our [Jenkins CI](https://common-jenkins.kubeme.io/) to test, release and deploy changes.
