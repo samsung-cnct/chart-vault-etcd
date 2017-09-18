@@ -6,7 +6,7 @@ SOLAS is also an international maritime treaty to ensure ships comply with minim
 # Quickstart
 
 - Determine a [name](http://phrontistery.info/nautical.html) for your project, for example, `zabra`.
-- [Create](https://help.github.com/articles/creating-a-new-repository/) a new empty repo under the `samsung-cnct` [org](https://github.com/samsung-cnct) named `zabra` using the GitHub GUI, for example https://github.com/samsung-cnct/zabra .
+- [Create](https://help.github.com/articles/creating-a-new-repository/) a new empty repo under the `samsung-cnct` [org](https://github.com/samsung-cnct) using the GitHub GUI, for example https://github.com/samsung-cnct/zabra .
 - [Duplicate](https://help.github.com/articles/duplicating-a-repository/) this repo (https://github.com/samsung-cnct/solas) and push it to the `zabra` repo you created in the previous step. Note the arguments to clone and push.
 
 ```
