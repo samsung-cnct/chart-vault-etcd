@@ -2,13 +2,13 @@
 
 **Note:** Please file issues for subcomponents under the appropriate repo
 
-| Component | Repo                                                                           |
-| --------- | ------------------------------------------------------------------------------ |
-| k2        | [samsung-cnct/k2cli](https://github.com/samsung-cnct/k2cli/issues/new)         |
-| k2-charts | [samsung-cnct/k2-charts](https://github.com/samsung-cnct/k2-charts/issues/new) |
-| k2-tools  | [samsung-cnct/k2-tools](https://github.com/samsung-cnct/k2-tools/issues/new)   |
+| Component       | Repo                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| solas           | [samsung-cnct/solas](https://github.com/samsung-cnct/solas/issues/new)                     |
+| solas-container | [samsung-cnct/solas-container](https://github.com/samsung-cnct/solas-container/issues/new) |
+| solas-chart     | [samsung-cnct/solas-chart](https://github.com/samsung-cnct/solas-chart/issues/new)         |
 
-**What keywords did you search in k2cli issues before filing this one?** (If you have found any duplicates, you should instead reply there.):
+**What keywords did you search in solas issues before filing this one?** (If you have found any duplicates, you should reply there instead.):
 
 ---
 
@@ -28,17 +28,13 @@ might close your issue.  If we're wrong, PLEASE feel free to reopen it and
 explain why.
 -->
 
-**k2cli version** (use `k2cli version`):
+**solas version**:
 
+Please provide a link to the repo you are trying to create.
 
 **Environment**:
 
 Please be sure not to submit any confidential information (e.g. ssh keys, provider secrets, etc.) as issues are publicly accessible.
-
-- **Environment variables** (e.g. `env | grep 'KRAKEN_`):
-- **Configuration files (`~/.kraken/config.yaml` or the file passed to `k2cli --config`) **:
-- **Others**:
-
 
 **What happened**:
 
