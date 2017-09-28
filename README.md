@@ -21,6 +21,6 @@ rm -rf solas.git
 
 # Integrations Used by the Samsung CNCT Tools Team
 
-- Configure CI/CD by following the instructions for [GitHub](https://github.com/samsung-cnct/template-chart/blob/master/docs/github.md), [Jenkins](https://github.com/samsung-cnct/template-chart/blob/master/docs/jenkins.md), and [Quay](https://github.com/samsung-cnct/template-chart/blob/master/docs/quay.md).
+- Configure CI/CD by following the instructions for [GitHub](https://github.com/samsung-cnct/solas/blob/master/docs/github.md), [Jenkins](https://github.com/samsung-cnct/solas/blob/master/docs/jenkins.md), and [Quay](https://github.com/samsung-cnct/solas/blob/master/docs/quay.md).
 
-- Configure [Slack](https://github.com/samsung-cnct/template-chart/blob/master/docs/slack.md) notifications.
+- Configure [Slack](https://github.com/samsung-cnct/solas/blob/master/docs/slack.md) notifications.
