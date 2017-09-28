@@ -19,7 +19,7 @@ rm -rf solas.git
 
 - [Fork](https://help.github.com/articles/fork-a-repo/) the `zabra` repo (https://github.com/samsung-cnct/zabra) from `samsung-cnct` and begin submiitting PRs.
 
-# Integrations Required for the Samsung CNCT Tools Team
+# Integrations Used by the Samsung CNCT Tools Team
 
 - Configure CI/CD by following the instructions for [GitHub](https://github.com/samsung-cnct/template-chart/blob/master/docs/github.md), [Jenkins](https://github.com/samsung-cnct/template-chart/blob/master/docs/jenkins.md), and [Quay](https://github.com/samsung-cnct/template-chart/blob/master/docs/quay.md).
 
