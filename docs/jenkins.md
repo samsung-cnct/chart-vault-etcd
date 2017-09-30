@@ -1,21 +1,27 @@
 # Jenkins CI/CD Build and Deploy
 
-Having cloned this repo to create a new chart using the [README](../README.md) 
-instructions at, edit this Jenkinsfile and Chart.yaml.in.
+Having cloned this repo to create a new chart using the [README](../README.md)
+instructions at, edit the Jenkinsfile and Chart.yaml.in (for charts).
 
 ### Jenkinsfile
 
+#### For Container Jenkinsfile:
+*  Edit definition at the top:
+```
+project_name = "container-<project-name>"
+```
 
-#### Edit three definitions at the top:
+#### For Chart Jenkinsfile
+* Edit three definitions at the top:
 ```
 def registry = "quay.io";
 def registry_user = "samsung_cnct";
-def chart_name = "sample-chart";
+def chart_name = "<project-name>";
 ```
 
 Replace each as needed. The chart_name should be the name of the chart you've added under the root of this git repo.
 
-### Chart.yaml.in
+### Chart.yaml.in (Charts Repos only)
 
 Edit this file to match your chart as needed. Do not alter the line starting with `version:`.
 
@@ -25,37 +31,32 @@ Edit this file to match your chart as needed. Do not alter the line starting wit
 
 * Log in to your Jenkins server.
 * Create a new project by selecting `New Item` on the Jenkins Homepage
-  * _Enter the name of this repo in the field at the top, eg chart-sample-chart_ ![screenshot](images/jenkins/project-name.png)
-  * Select Multibranch Pipeline ![screenshot](images/jenkins/multibranch.png)
+  * Enter the name of this repo in the field at the top:
+      * Chart `foo` will be named `foo`
+      * Container `foo` will be named `container-foo`   
+  * Set the Repo to `Public`
+
+  ![screenshot](images/jenkins/new-repo.png)
+
+  * Select Multibranch Pipeline
+
+   ![screenshot](images/jenkins/multibranch.png)
 
 ### Add GitHub configuration
 * Under `Branch Sources`, select `Add Source`
 * Select Github
+* _Select an entry under "Credentials", eg "Samsung CNCT Jenkins Bot/******"_
+    * Once you add this, you may need to go back actually select it.
 * _Set an owner, eg samsung-cnct_
-* _Select an entry under "scan credentials", eg "Samsung CNCT Jenkins Bot/******"_
   * Using anonymous access to github may result in throttling
-* _Select your repository, eg "chart-sample-chart"_
-* Advanced
-   * Check _Build origin PRs (unmerged head)_
-   * Check _Build fork PRs (unmerged head)_
-   * Uncheck _everything else_
+* _Select your repository, eg "container-foo"_
 
-![screenshot](images/jenkins/github-settings.png)
+![screenshot](images/jenkins/github-branch-source.png)
 
-### Add Git configuration
-* Under `Branch Sources`, select `Add Source`
-* Select Git
-* _Add https url for the repo in "Project Repository", eg "https://github.com/samsung-cnct/chart-sample-chart.git"_
-* _Add the same credentials as github above_
-* Advanced
-  * _Enter into RefSpecs_ `+refs/tags/*:refs/remotes/origin/tags/*`
-  * _Enter into Include Branches_ `**`
-* Build Configuration
-  * _Enter into Script Path_ `build/Jenkinsfile`
-  * Scan Repository Triggers
-    * Periodically if not otherwise run
+### Add Registry Credentials to Pipeline Model definitions
+Under pipeline model definition, add the registry credentials of your repo-specific robot.  
 
-![screenshot](images/jenkins/git-settings.png)
+![screenshot](images/jenkins/pipeline.png)
 
 ### Add quay.io application repository robot credentials
 
@@ -69,7 +70,24 @@ Per the Jenkinsfile, this credential should be set to `quay_credentials`
 
 ![screenshot](images/jenkins/quay-credentials.png)
 
+### Add Kubernetes Secret to Production Cluster for your robot
+Go to https://quay.io/organization/samsung_cnct?tab=robots and find your robot.  
+Click on Docker Configuration and then download the Docker credentials file for the robot account
+![screenshot](images/jenkins/get-docker-config.png)
+
+** To work properly, you *must* rename that file to `config.json` **
+
+Log in to the CNCT production cluster using [these](https://github.com/samsung-cnct/docs/blob/master/cnct/production-kubernetes-cluster.md) instructions.
+
+Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/) to bring this configuration into the cluster.
+There are several methods that will work, a simple one is to run:
+```
+kubectl create secret generic samsung-cnct-quay-robot-<repo-name>cfg --namespace common-jenkins --from-file=./config.json
+```
+
+Then head to the Jenkinsfile for your repo, and edit the `podTemplate` `secretVolume` to have a `secretName` of `samsung-cnct-quay-robot-<repo-name>cfg`
+
+
 ### You're almost done
 
 So select `Save` and let's configure [github](github.md)
-
