@@ -17,7 +17,9 @@ cd ..
 rm -rf solas.git
 ```
 
-- [Fork](https://help.github.com/articles/fork-a-repo/) the `zabra` repo (https://github.com/samsung-cnct/zabra) from `samsung-cnct` and begin submiitting PRs.
+- [Fork](https://help.github.com/articles/fork-a-repo/) the `zabra` repo (https://github.com/samsung-cnct/zabra) from `samsung-cnct`.
+* In the settings section of the new repository (owned by samsung-cnct), go to 'Collaborators & teams', then add `commontools` as a team with admin privileges, and `kraken-reviewers` as a team with write privileges.
+* Begin submitting PRs
 
 # Integrations Used by the Samsung CNCT Tools Team
 
