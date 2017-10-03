@@ -1,55 +1,82 @@
-# Jenkins CI/CD Build and Deploy
+# Overview
 
-Having cloned this repo to create a new chart using the [README](../README.md)
-instructions at, edit the Jenkinsfile and Chart.yaml.in (for charts).
+We use Jenkins to implement our CI/CD pipeline. There is one Jenkins job for
+each GitHub repository. Each job builds, tests and, then deploys an artifact
+to Quay (e.g. a container for `solas-container` derived repositories, or a
+chart for `solas-chart` derived repositories).
 
-### Jenkinsfile
+The following assumes a repository which has been duplicated according to
+the instructions in the [README](../README.md). The [GitHub](./github.md)
+and [Quay](./quay.md) instructions should have already been followed.
 
-#### For Container Jenkinsfile:
-*  Edit definition at the top:
+## Edit the [Jenkinsfile](../Jenkinsfile)
+
+* Edit the `container_name` (or `image_name`), and `robot_secret` at the top of
+the [Jenkinsfile](../Jenkinsfile).
+
+  * For `solas-container` derived repositories:
+
 ```
-project_name = "container-<project-name>"
+def image_name            = "zabra-container";
+def robot_secret          = "quay-robot-zabra-container-rw"
 ```
 
-#### For Chart Jenkinsfile
-* Edit three definitions at the top:
+  The resulting container image will be deployed to the `quay.io` Container
+  Repository at https://quay.io/application/samsung_cnct/zabra-container?namespace=samsung_cnct .
+
+  * For `solas-chart` derived repositories:
+
 ```
-def registry = "quay.io";
-def registry_user = "samsung_cnct";
-def chart_name = "<project-name>";
+def chart_name            = "zabra";
+def robot_secret          = "quay-robot-zabra-rw"
 ```
 
-Replace each as needed. The chart_name should be the name of the chart you've added under the root of this git repo.
+  The resulting helm chart will be deployed to the `quay.io` App
+  Repository at https://quay.io/application/samsung_cnct/zabra?namespace=samsung_cnct .
 
-### Chart.yaml.in (Charts Repos only)
+The secrets defined here were created during the [Quay](./quay.md) configuration.
 
-Edit this file to match your chart as needed. Do not alter the line starting with `version:`.
+## Edit the [Chart.yaml.in](../Chart.yaml.in) (solas-chart derived repositories only)
+
+* Edit the `name`, `description`, `home`, and `sources`. Do not edit the `version`.
+
+```
+name: zabra
+version: ${CHART_VER}-${CHART_REL}
+description: Sample chart template for registry
+keywords:
+- kraken
+home: https://github.com/samsung-cnct/chart-zabra
+sources:
+- https://github.com/samsung-cnct/chart-zabra
+```
+
+Also add any relevant keywords. For inspiration you should look at other
+related charts. For example, if you are creating a logging chart, you might
+look at https://github.com/samsung-cnct/chart-fluent-bit.
 
 ## Configure Jenkins
 
 ### Login and create the project
 
 * Log in to your Jenkins server.
+
 * Create a new project by selecting `New Item` on the Jenkins Homepage
-  * Enter the name of this repo in the field at the top:
-      * Chart `foo` will be named `foo`
-      * Container `foo` will be named `container-foo`   
-  * Set the Repo to `Public`
-
-  ![screenshot](images/jenkins/new-repo.png)
-
-  * Select Multibranch Pipeline
-
-   ![screenshot](images/jenkins/multibranch.png)
+  * Enter the name of this repository in the field at the top, for example, `container-zabra` or `chart-zabra`
+  * Set the project to `Public`
+  * Select Multibranch Pipeline ![screenshot](images/jenkins/multibranch.png)
 
 ### Add GitHub configuration
+
 * Under `Branch Sources`, select `Add Source`
+
 * Select Github
-* _Select an entry under "Credentials", eg "Samsung CNCT Jenkins Bot/******"_
-    * Once you add this, you may need to go back actually select it.
-* _Set an owner, eg samsung-cnct_
+
+* _Select an entry under "Credentials", e.g. "Samsung CNCT Jenkins Bot/******"_
+  * Once you add this, you may need to go back and actually select it.
+* _Set an owner, e.g. `samsung-cnct`_
   * Using anonymous access to github may result in throttling
-* _Select your repository, eg "container-foo"_
+* _Select your repository, eg "container-zabra" or "chart-zabra"_
 
 ![screenshot](images/jenkins/github-branch-source.png)
 
@@ -58,36 +85,4 @@ Under pipeline model definition, add the registry credentials of your repo-speci
 
 ![screenshot](images/jenkins/pipeline.png)
 
-### Add quay.io application repository robot credentials
-
-Easiest way to do this is to select an `Add` button on one of the source repositories `Credentials` lines
-
-Per the Jenkinsfile, this credential should be set to `quay_credentials`
-
-* Set the username to be the username of the robot - this is typically `group+robotname`
-* Set the password to be the password of the robot - you can obtain this by reading the [quay instructions](quay.md)
-* Set the ID to be `quay_credentials`
-
-![screenshot](images/jenkins/quay-credentials.png)
-
-### Add Kubernetes Secret to Production Cluster for your robot
-Go to https://quay.io/organization/samsung_cnct?tab=robots and find your robot.  
-Click on Docker Configuration and then download the Docker credentials file for the robot account
-![screenshot](images/jenkins/get-docker-config.png)
-
-** To work properly, you *must* rename that file to `config.json` **
-
-Log in to the CNCT production cluster using [these](https://github.com/samsung-cnct/docs/blob/master/cnct/production-kubernetes-cluster.md) instructions.
-
-Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/) to bring this configuration into the cluster.
-There are several methods that will work, a simple one is to run:
-```
-kubectl create secret generic samsung-cnct-quay-robot-<repo-name>cfg --namespace common-jenkins --from-file=./config.json
-```
-
-Then head to the Jenkinsfile for your repo, and edit the `podTemplate` `secretVolume` to have a `secretName` of `samsung-cnct-quay-robot-<repo-name>cfg`
-
-
-### You're almost done
-
-So select `Save` and let's configure [github](github.md)
+### Remember to select `Save`

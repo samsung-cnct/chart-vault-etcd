@@ -3,7 +3,8 @@ github_org             = "samsung-cnct"
 quay_org               = "samsung_cnct"
 publish_branch         = "master"
 image_tag              = "${env.RELEASE_VERSION}" != "null" ? "${env.RELEASE_VERSION}" : "latest"
-project_name           = "name of project"
+project_name           = "zabra"
+robot_secret            = "quay-robot-zabra-rw"
 
 podTemplate(label: "${project_name}", containers: [
     containerTemplate(name: 'jnlp', image: "quay.io/${quay_org}/custom-jnlp:0.1", args: '${computer.jnlpmac} ${computer.name}'),
@@ -11,7 +12,7 @@ podTemplate(label: "${project_name}", containers: [
   ], volumes: [
     hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
     hostPathVolume(hostPath: '/var/lib/docker/scratch', mountPath: '/mnt/scratch'),
-    secretVolume(mountPath: '/home/jenkins/.docker/', secretName: 'samsung-cnct-quay-robot-dockercfg')
+    secretVolume(mountPath: '/home/jenkins/.docker/', secretName: robot_secret)
   ]) {
     node("${project_name}") {
       customContainer('docker') {
