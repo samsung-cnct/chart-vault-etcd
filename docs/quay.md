@@ -111,9 +111,11 @@ kubectl create secret generic quay-robot-zabra-container-rw --namespace common-j
 ** Calculate base64 encoded username and password
 
 ```
-echo 'samsung_cnct+zabra_r' | base64
-echo 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | base64
+echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
+echo -n 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | base64 | tr -d '\n'
 ```
+ 
+The `tr` command may be required on OSX.
 
 ** Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 to bring this configuration into the cluster. There are several methods
