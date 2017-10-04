@@ -66,21 +66,9 @@ granted (e.g. `zabra_container_rw`, `zabra_rw`).
 ![screenshot](images/quay/robot-page.png)
 ![screenshot](images/quay/creating-robot.png)
 
-* After
+* Grant the robot write access to the container/application repository
 
-## Grant the robot write access to the container/application repository
-
-* For `zabra-container` and `zabra`, go to each repositories setting pages
-https://quay.io/application/samsung_cnct/zabra-container?tab=settings and
-https://quay.io/application/samsung_cnct/zabra?tab=settings)
-![screenshot](images/quay/application-settings-page.png)
-
-* Type in your robot's name (e.g. `zabra_container_rw` or `zabra_rw`) and
-select `Write` access
-![screenshot](images/quay/adding-robot.png)
-
-* Select `Add Permission` and verify that the robot was given permissions
-![screenshot](images/quay/robot-added.png)
+![screenshot](images/quay/add-robot-permissions.png)
 
 ### Add Kubernetes Secret to Production Cluster for your robot
 
