@@ -26,15 +26,15 @@ the container, is generally the artifact we expect users to interact with.
 * Click the `+` icon in the top right of the page, near your name, and select
 `New Repository` ![screenshot](images/quay/create_new_repository.png).
 
-* Choose `samsung_cnct` for the namespace.
-
-* Enter the name of the artifact. For example, `zabra-container` or `zabra`.
-
 * Select `Container Repository`, for `solas-container` derived repositories
 
 * Select `Application Repository`, for `solas-chart` derived repositories
 
-![screenshot](images/quay/cool-application.png)
+* Choose `samsung_cnct` for the namespace.
+
+* Enter the name of the artifact. For example, `zabra-container` or `zabra`.
+
+![screenshot](images/quay/new-repo.png)
 
 * Write a helpful description, it will never hurt!
 
@@ -57,18 +57,14 @@ they are replaced by underscores. For example, read/write premissions for
 the `zabra-container` artifact  are named `zabra_container_rw`. The same
 permissions for `zabra` are `zabra_rw`.
 
-* Go to the `samsung_cnct` robots page here
-https://quay.io/organization/samsung_cnct?tab=robots
+* Go to your repository's settings
+* Under the section ` User and Robot Permissions`
+  * Click Create Robot Account from the `Select a team or user` drop down menu
+  * Name your robot according to the convention above
+  * Grant the robot `write` access
+  * While you have settings open, click `Owners` from the `Teams` section of the drop down menu and grant `admin` privileges
 
-* Create a new robot account named after the repository and the permissions
-granted (e.g. `zabra_container_rw`, `zabra_rw`).
-
-![screenshot](images/quay/robot-page.png)
-![screenshot](images/quay/creating-robot.png)
-
-* Grant the robot write access to the container/application repository
-
-![screenshot](images/quay/add-robot-permissions.png)
+![screenshot](images/quay/zabra-permissions.png)
 
 ### Add Kubernetes Secret to Production Cluster for your robot
 
@@ -90,14 +86,14 @@ robot.
 
 * For `solas-container` derived repositories,
 
-* Click on Docker Configuration and then download the Docker credentials file
+  * Click on Docker Configuration and then download the Docker credentials file
 for the robot account ![screenshot](images/jenkins/get-docker-config.png)
 
-* The name of the downloaded file will become the name of the secret file
+  * The name of the downloaded file will become the name of the secret file
 mounted in the Kubernetes Pod which runs CI/CD for your repository.
 **Therefore, you *must* rename that file to `config.json`**
 
-** Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
+  * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 to bring this configuration into the cluster. There are several methods
 that will work, a simple one is to run:
 ```
@@ -106,22 +102,20 @@ kubectl create secret generic quay-robot-zabra-container-rw --namespace common-j
 
 * For `solas-chart` derived repositories,
 
-* Click on Docker Login
+  * Click on Docker Login
 
-** Calculate base64 encoded username and password
-
+  * Calculate base64 encoded username and password (the `tr` command may be required on OSX).
 ```
 echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
 echo -n 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | base64 | tr -d '\n'
 ```
- 
-The `tr` command may be required on OSX.
 
-** Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
+
+  * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 to bring this configuration into the cluster. There are several methods
 that will work, a simple one is to run:
 ```
-kubectl create secret generic quay-robot-zabra-rw --from-literal=username=c2Ftc3VuZ19jimN0KkphYnJdX3IK --from-literal=password=E4FDISLNWE6PPMLV9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKB3YNOC6YVUF0PS
+kubectl create secret generic quay-robot-zabra-rw --namespace common-jenkins --from-literal=username=c2Ftc3VuZ19jimN0KkphYnJdX3IK --from-literal=password=E4FDISLNWE6PPMLV9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKB3YNOC6YVUF0PS
 ```
 
 Then, if you have not already done so, head to the Jenkinsfile for your
