@@ -76,8 +76,10 @@ look at https://github.com/samsung-cnct/chart-fluent-bit.
   * Once you add this, you may need to go back and actually select it.
 * _Set an owner, e.g. `samsung-cnct`_
   * Using anonymous access to github may result in throttling
-* _Select your repository, eg "container-zabra" or "chart-zabra"_
-
+* _Select your repository, e.g. "container-zabra", "chart-zabra", etc._
+* _Under the GitHub branch source, add the additional behaviors "Advanced
+checkout behaviors" and "Advanced clone behviors", but do not change their
+settings._
 ![screenshot](images/jenkins/github-branch-source.png)
 
 ### Add Registry Credentials to Pipeline Model definitions

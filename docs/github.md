@@ -16,6 +16,8 @@ add `commontools` as a team with admin privileges (required for
 [slack](./docs/slack.md) notifications, and `kraken-reviewers` as a team
 with write privileges (required for [CODEOWNERS](./CODEOWNERS)).
 
+![screenshot](images/github/github-teams.png)
+
 ## Jenkins Webhooks
 
 Within your GitHub repository, go to settings and add the following webhooks:
