@@ -30,7 +30,7 @@ Within your GitHub repository, go to settings and add the following webhooks:
 ### GitHub Pull Request Builder Webhook
 
 * URL should be `https://common-jenkins.kubeme.io/ghprbhook/`
-* Select `Let me select indivdual events` and choose:
+* Select `Let me select individual events.` and choose:
   * Issue comment
   * Pull Request
 
