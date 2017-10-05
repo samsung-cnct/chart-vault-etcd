@@ -86,40 +86,25 @@ instructions.
 * Go to https://quay.io/organization/samsung_cnct?tab=robots and find your
 robot.
 
-* For `solas-container` derived repositories,
+* Click on Docker Login
 
-  * Click on Docker Configuration and then download the Docker credentials file
-for the robot account ![screenshot](images/jenkins/get-docker-config.png)
-
-  * The name of the downloaded file will become the name of the secret file
-mounted in the Kubernetes Pod which runs CI/CD for your repository.
-**Therefore, you *must* rename that file to `config.json`**
-
-  * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
-to bring this configuration into the cluster. There are several methods
-that will work, a simple one is to run:
-```
-kubectl create secret generic quay-robot-zabra-container-rw --namespace common-jenkins --from-file=./config.json
-```
-
-* For `solas-chart` derived repositories,
-
-  * Click on Docker Login
-
-  * Calculate base64 encoded username and password (the `tr` command may be required on OSX).
+* Calculate base64 encoded username and password (the `tr` command may be required on OSX).
 ```
 echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
 echo -n 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | base64 | tr -d '\n'
 ```
 
-
   * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 to bring this configuration into the cluster. There are several methods
 that will work, a simple one is to run:
+
 ```
-kubectl create secret generic quay-robot-zabra-rw --namespace common-jenkins --from-literal=username=c2Ftc3VuZ19jimN0KkphYnJdX3IK --from-literal=password=E4FDISLNWE6PPMLV9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKB3YNOC6YVUF0PS
+ROBOT_SECRET=quay-robot-zabra-rw \
+kubectl create secret generic ${ROBOT_SECRET} --namespace common-jenkins \
+    --from-literal=username=NMbrWoawkWaz=hcDkJdlqMYtGTGVJVEOn1MzpSZG \
+    --from-literal=password=jl01UNYMKRkcQkX201EUMtEUURxQKHTBTTURMVRlR9lUB01zNrodin
 ```
 
 Then, if you have not already done so, head to the Jenkinsfile for your
-repo, and edit the `secret_name` to be `quay-robot-zabra-container-rw`
+repo, and edit the `robot_secret` to be `quay-robot-zabra-container-rw`
 or `quay-robot-zabra-rw`
