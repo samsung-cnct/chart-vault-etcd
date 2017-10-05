@@ -36,6 +36,8 @@ the container, is generally the artifact we expect users to interact with.
 
 ![screenshot](images/quay/new-repo.png)
 
+* For `Initialize repository` select `(Empty repository)`.
+
 * Write a helpful description, it will never hurt!
 
 * Make the repository public or private as appropriate.
