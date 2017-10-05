@@ -63,7 +63,6 @@ look at https://github.com/samsung-cnct/chart-fluent-bit.
 
 * Create a new project by selecting `New Item` on the Jenkins Homepage
   * Enter the name of this repository in the field at the top, for example, `container-zabra` or `chart-zabra`
-  * Set the project to `Public`
   * Select Multibranch Pipeline ![screenshot](images/jenkins/multibranch.png)
 
 ### Add GitHub configuration
