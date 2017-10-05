@@ -80,11 +80,7 @@ look at https://github.com/samsung-cnct/chart-fluent-bit.
 * _Under the GitHub branch source, add the additional behaviors "Advanced
 checkout behaviors" and "Advanced clone behviors", but do not change their
 settings._
+
 ![screenshot](images/jenkins/github-branch-source.png)
-
-### Add Registry Credentials to Pipeline Model definitions
-Under pipeline model definition, add the registry credentials of your repo-specific robot.  
-
-![screenshot](images/jenkins/pipeline.png)
 
 ### Remember to select `Save`
