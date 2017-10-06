@@ -95,13 +95,10 @@ echo -n 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | bas
 ```
 
   * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
-to bring this configuration into the cluster. There are several methods
-that will work, a simple one is to run:
+to bring this configuration into the cluster. First create a file named `secret.yaml` containing
+the values calculated above.
 
 ```
-rodin:common-tools dwat$ k create -f secret.yaml 
-secret "quay-robot-zabra-rw" created
-rodin:common-tools dwat$ cat secret.yaml 
 apiVersion: v1
 kind: Secret
 metadata:
@@ -111,9 +108,10 @@ type: Opaque
 data:
   username: c2Ftc3VuZ19jbmN0K3phYnJhX3I=
   password: RWE0ZkZqRHJlSVNMb05lV3NkRWc2UFBNTFZEaDlHUU5SUk9FQkoxRzc1NTlNUlBKM1NTUUZKNEY1Rk00Q0tCUw==
-rodin:common-tools dwat$ 
 ```
 
-Then, if you have not already done so, head to the Jenkinsfile for your
+Then run `kubectl create -f secret.yaml` to create the secret.
+
+Finally, if you have not already done so, head to the Jenkinsfile for your
 repo, and edit the `robot_secret` to be `quay-robot-zabra-container-rw`
 or `quay-robot-zabra-rw`
