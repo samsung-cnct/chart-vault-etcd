@@ -77,7 +77,7 @@ look at https://github.com/samsung-cnct/chart-fluent-bit.
   * Using anonymous access to github may result in throttling
 * _Select your repository, e.g. "container-zabra", "chart-zabra", etc._
 * _Under the GitHub branch source, add the additional behaviors "Advanced
-checkout behaviors" and "Advanced clone behviors", but do not change their
+checkout behaviors" and "Advanced clone behaviors", but do not change their
 settings._
 
 ![screenshot](images/jenkins/github-branch-source.png)
