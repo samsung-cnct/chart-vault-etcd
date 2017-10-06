@@ -99,10 +99,19 @@ to bring this configuration into the cluster. There are several methods
 that will work, a simple one is to run:
 
 ```
-ROBOT_SECRET=quay-robot-zabra-rw \
-kubectl create secret generic ${ROBOT_SECRET} --namespace common-jenkins \
-    --from-literal=username=NMbrWoawkWaz=hcDkJdlqMYtGTGVJVEOn1MzpSZG \
-    --from-literal=password=jl01UNYMKRkcQkX201EUMtEUURxQKHTBTTURMVRlR9lUB01zNrodin
+rodin:common-tools dwat$ k create -f secret.yaml 
+secret "quay-robot-zabra-rw" created
+rodin:common-tools dwat$ cat secret.yaml 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: quay-robot-zabra-rw
+  namespace: common-jenkins
+type: Opaque
+data:
+  username: c2Ftc3VuZ19jbmN0K3phYnJhX3I=
+  password: RWE0ZkZqRHJlSVNMb05lV3NkRWc2UFBNTFZEaDlHUU5SUk9FQkoxRzc1NTlNUlBKM1NTUUZKNEY1Rk00Q0tCUw==
+rodin:common-tools dwat$ 
 ```
 
 Then, if you have not already done so, head to the Jenkinsfile for your
