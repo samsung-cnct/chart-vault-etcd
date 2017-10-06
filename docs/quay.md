@@ -88,10 +88,10 @@ robot.
 
 * Click on Docker Login
 
-* Calculate base64 encoded username and password (the `tr` command may be required on OSX).
+* Calculate base64 encoded docker username and password (the `tr` command may be required on OSX). Username and password can be copied from the displayed command for docker login. 
 ```
 echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
-echo -n 'Ea4fFjDreISLoNeWsdEg6PPMLVDh9GQNRROEBJ1G7559MRPJ3SSQFJ4F5FM4CKBS' | base64 | tr -d '\n'
+echo -n '<robot's_docker_password>' | base64 | tr -d '\n'
 ```
 
   * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
@@ -106,8 +106,8 @@ metadata:
   namespace: common-jenkins
 type: Opaque
 data:
-  username: c2Ftc3VuZ19jbmN0K3phYnJhX3I=
-  password: RWE0ZkZqRHJlSVNMb05lV3NkRWc2UFBNTFZEaDlHUU5SUk9FQkoxRzc1NTlNUlBKM1NTUUZKNEY1Rk00Q0tCUw==
+  username: <encoded_docker_username>
+  password: <encoded_docker_password>
 ```
 
 Then run `kubectl create -f secret.yaml` to create the secret.

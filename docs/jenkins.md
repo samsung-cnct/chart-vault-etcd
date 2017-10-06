@@ -24,6 +24,8 @@ def robot_secret          = "quay-robot-zabra-container-rw"
   The resulting container image will be deployed to the `quay.io` Container
   Repository at https://quay.io/application/samsung_cnct/zabra-container?namespace=samsung_cnct .
 
+  Make sure to push these changes to the github repository before the next step.
+
   * For `solas-chart` derived repositories:
 
 ```
@@ -55,6 +57,8 @@ Also add any relevant keywords. For inspiration you should look at other
 related charts. For example, if you are creating a logging chart, you might
 look at https://github.com/samsung-cnct/chart-fluent-bit.
 
+Make sure to push these changes to the github repository before the next step.
+
 ## Configure Jenkins
 
 ### Login and create the project
@@ -80,6 +84,6 @@ look at https://github.com/samsung-cnct/chart-fluent-bit.
 checkout behaviors" and "Advanced clone behaviors", but do not change their
 settings._
 
-![screenshot](images/jenkins/github-branch-source.png)
+![screenshot](images/jenkins/github-branch-sources.png)
 
 ### Remember to select `Save`
