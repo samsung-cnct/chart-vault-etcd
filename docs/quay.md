@@ -48,7 +48,7 @@ the container, is generally the artifact we expect users to interact with.
 ## Create a robot account
 
 A robot account is used to authenticate and authorize access to the repositories
-hosted by Quay. Jenkins needs access access to push artifacts to the registry.
+hosted by Quay. Jenkins needs access to push artifacts to the registry.
 We use a different robot account for each repository because this improves
 auditing and prevents some mistakes (e.g. a build job accidently publishing to
 the wrong repository).
