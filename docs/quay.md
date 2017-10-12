@@ -102,7 +102,7 @@ the values calculated above.
 apiVersion: v1
 kind: Secret
 metadata:
-  name: quay-robot-zabra-rw
+  name: quay-robot-zabra-container-rw
   namespace: common-jenkins
 type: Opaque
 data:
