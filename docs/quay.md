@@ -88,11 +88,19 @@ robot.
 
 * Click on Docker Login
 
-* Calculate base64 encoded docker username and password (the `tr` command may be required on OSX). Username and password can be copied from the displayed command for docker login. 
+* Calculate base64 encoded docker username and password (the `tr` command may
+be required on OSX). Username and password can be copied from the displayed
+command for docker login. 
+
 ```
-echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
-echo -n '<robot's_docker_password>' | base64 | tr -d '\n'
+export HISTCONTROL=ignorespace
+ echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n' ; echo
+ echo -n '<robot's_docker_password>' | base64 | tr -d '\n' ; echo
 ```
+
+Note the leading space in each echo command sequence. This prevents the
+command from being stored in your history when you are using bash, and
+is a good security practice.  
 
   * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
 to bring this configuration into the cluster. First create a file named `secret.yaml` containing
@@ -110,7 +118,8 @@ data:
   password: <encoded_docker_password>
 ```
 
-Then run `kubectl create -f secret.yaml` to create the secret.
+Then run `kubectl create -f secret.yaml` to create the secret, and then
+delete the file `secret.yaml`.
 
 Finally, if you have not already done so, head to the Jenkinsfile for your
 repo, and edit the `robot_secret` to be `quay-robot-zabra-container-rw`
