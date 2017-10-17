@@ -88,10 +88,12 @@ robot.
 
 * Click on Docker Login
 
-* Calculate base64 encoded docker username and password (the `tr` command may be required on OSX). Username and password can be copied from the displayed command for docker login. 
+* Calculate base64 encoded docker username and password (the `tr` command may
+be required on OSX). Username and password can be copied from the displayed
+command for docker login. 
 ```
-echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n'
-echo -n '<robot's_docker_password>' | base64 | tr -d '\n'
+echo -n 'samsung_cnct+zabra_r' | base64 | tr -d '\n' ; echo
+echo -n '<robot's_docker_password>' | base64 | tr -d '\n' ; echo
 ```
 
   * Create a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
