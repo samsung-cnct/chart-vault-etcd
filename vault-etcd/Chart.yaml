@@ -1,0 +1,14 @@
+name: vault-etcd
+version: 0.0.1
+#version: ${CHART_VER}-${CHART_REL}
+description: Vault etcd chart
+keywords:
+- kraken
+home: https://github.com/samsung-cnct/chart-vault-etcd
+sources:
+- https://github.com/samsung-cnct/chart-vault-etcd
+maintainers:
+- name: Samsung CNCT
+  email: samsung.cloudnative@gmail.com
+icon: https://github.com/samsung-cnct/solas/docs/images/samsung-logo.svg
+engine: gotpl
