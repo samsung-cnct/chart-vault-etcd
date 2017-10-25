@@ -81,6 +81,11 @@ spec:
                 exit 0
             }
 
+            my_ip() 
+            {
+              hostname -i
+            }
+
             eps() {
                 EPS=""
                 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
@@ -101,8 +106,8 @@ spec:
                 # re-join member
                 ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://$(my_ip):2380,http://127.0.0.1:2380 \
+                    --listen-client-urls http://$(my_ip):2379,http://127.0.0.1:2379 \
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir $DATA_DIR/default.etcd
             fi
@@ -138,8 +143,8 @@ spec:
                 collect_member &
 
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://$(my_ip):2380,http://127.0.0.1:2380 \
+                    --listen-client-urls http://$(my_ip):2379,http://127.0.0.1:2379 \
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir $DATA_DIR/default.etcd \
                     --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
@@ -162,16 +167,21 @@ spec:
 
             collect_member &
 
-            # join member
+            cmd="""
             exec etcd --name ${HOSTNAME} \
                 --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                --listen-peer-urls http://$(my_ip):2380,http://127.0.0.1:2380 \
+                --listen-client-urls http://$(my_ip):2379,http://127.0.0.1:2379 \
                 --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                 --initial-cluster-token etcd-cluster-1 \
                 --initial-cluster ${PEERS} \
                 --initial-cluster-state new \
                 --data-dir $DATA_DIR/default.etcd
+            """
+
+            # join member
+            echo "$cmd"
+            $cmd
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.VolumeMount }}
