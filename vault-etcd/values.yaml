@@ -4,8 +4,8 @@
 # name: value
 
 Name: etcdvault
-PeerPort: 2380
-ClientPort: 2379
+PeerPort: 3380
+ClientPort: 3379
 Component: "etcd"
 Replicas: 3
 Image: "quay.io/coreos/etcd"
