@@ -4,6 +4,8 @@ version: 0.0.1
 description: Vault etcd chart
 keywords:
 - kraken
+- vault
+- etcd
 home: https://github.com/samsung-cnct/chart-vault-etcd
 sources:
 - https://github.com/samsung-cnct/chart-vault-etcd
