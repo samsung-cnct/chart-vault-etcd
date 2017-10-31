@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "vault-etcd.fullname" . }}
+  labels:
+    app: {{ template "vault-etcd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  etcd-start.sh: |-
+{{ .Files.Get "etcd-start.sh" | indent 4 }}
+  lifecycle-prestop.sh: |-
+{{ .Files.Get "lifecycle-prestop.sh" | indent 4 }}

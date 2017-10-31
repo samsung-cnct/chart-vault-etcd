@@ -1,21 +1,20 @@
-# Default values for etcd.
-# This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
+component: "etcd"
 
-Name: etcdvault
-PeerPort: 2380
-ClientPort: 2379
-Component: "etcd"
-Replicas: 3
-Image: "quay.io/coreos/etcd"
-ImageTag: "v3.2.9"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-Storage: "1Gi"
-DataDir: "/ephemeral"
-VolumeMount: "ephemeral"
+image:
+  source: "quay.io/coreos/etcd"
+  tag: "v3.2.9"
+  pullPolicy: "Always"
+
+service:
+  name: etcdvault
+  peerPort: 3380
+  clientPort: 3379
+  replicas: 3
+  cpu: "100m"
+  memory: "512Mi"
+  dataDir: "/ephemeral"
+  terminationGracePeriodSeconds: 30
+
 ## etcd data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
 ## If set to "-", StorageClassName: "", which disables dynamic provisioning
@@ -24,4 +23,9 @@ VolumeMount: "ephemeral"
 ##   GKE, AWS & OpenStack)
 ##
 # set to "default"
-storageClass: "default"
+storage:
+  storageClass: "default"
+  size: 1Gi
+  mount: "ephemeral"
+  accessModes:
+    - ReadWriteOnce
