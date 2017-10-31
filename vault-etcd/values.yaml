@@ -15,6 +15,20 @@ service:
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
 
+Name: etcdvault
+PeerPort: 3380
+ClientPort: 3379
+Component: "etcd"
+Replicas: 3
+Image: "quay.io/coreos/etcd"
+ImageTag: "v3.2.9"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "512Mi"
+Storage: "1Gi"
+DataDir: "/ephemeral"
+VolumeMount: "ephemeral"
+
 ## etcd data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
 ## If set to "-", StorageClassName: "", which disables dynamic provisioning

@@ -40,11 +40,11 @@ spec:
         - name: SET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
-          value: {{ .Values.service.dataDir }}
-        - name: ETCD_CLIENT_PORT
-          value: {{ .Values.service.clientPort | quote }}
+          value: {{ .Values.DataDir }}
         - name: ETCD_PEER_PORT
-          value: {{ .Values.service.peerPort | quote }}
+          value: {{ .Values.PeerPort | quote}}
+        - name: ETCD_CLIENT_PORT
+          value: {{ .Values.ClientPort | quote}}
         volumeMounts:
         - name: {{ .Values.storage.mount }}
           mountPath: {{ .Values.service.dataDir }}
@@ -69,6 +69,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "vault-etcd.fullname" . }}
+
   volumeClaimTemplates:
   - metadata:
         name: {{ .Values.storage.mount }}
