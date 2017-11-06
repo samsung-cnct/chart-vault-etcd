@@ -1,18 +1,10 @@
-#!/usr/bin/env sh -ec
-
-
-
-HOSTNAME=$(hostname)
+#!/usr/bin/env sh
 
 # store member id into PVC for later member replacement
 collect_member() {
     while ! etcdctl member list &>/dev/null; do sleep 1; done
     etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1 > $DATA_DIR/member_id
     exit 0
-}
-
-my_ip(){
-  hostname -i
 }
 
 eps() {
@@ -27,6 +19,11 @@ member_hash() {
     etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1
 }
 
+
+HOSTNAME=$(hostname)
+MY_IP=$(hostname -i)
+
+
 # re-joining after failure?
 if [ -e $DATA_DIR/default.etcd ]; then
     echo "Re-joining etcd member"
@@ -35,8 +32,8 @@ if [ -e $DATA_DIR/default.etcd ]; then
     # re-join member
     ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT}
     exec etcd --name ${HOSTNAME} \
-        --listen-peer-urls http://$(my_ip):${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
-        --listen-client-urls http://$(my_ip):${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
+        --listen-peer-urls http://${MY_IP}:${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
+        --listen-client-urls http://${MY_IP}:${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
         --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_CLIENT_PORT} \
         --data-dir $DATA_DIR/default.etcd
 fi
@@ -72,8 +69,8 @@ if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
     collect_member &
 
     exec etcd --name ${HOSTNAME} \
-        --listen-peer-urls http://$(my_ip):${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
-        --listen-client-urls http://$(my_ip):${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
+        --listen-peer-urls http://${MY_IP}:${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
+        --listen-client-urls http://${MY_IP}:${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
         --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_CLIENT_PORT} \
         --data-dir $DATA_DIR/default.etcd \
         --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} \
@@ -99,8 +96,8 @@ collect_member &
 cmd="""
 exec etcd --name ${HOSTNAME} \
     --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} \
-    --listen-peer-urls http://$(my_ip):${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
-    --listen-client-urls http://$(my_ip):${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
+    --listen-peer-urls http://${MY_IP}:${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
+    --listen-client-urls http://${MY_IP}:${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_CLIENT_PORT} \
     --initial-cluster-token etcd-cluster-1 \
     --initial-cluster ${PEERS} \

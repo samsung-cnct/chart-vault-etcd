@@ -2,7 +2,7 @@ component: "etcd"
 
 image:
   source: "quay.io/coreos/etcd"
-  tag: "v3.2.9"
+  tag: "v3.0.17"
   pullPolicy: "Always"
 
 service:
