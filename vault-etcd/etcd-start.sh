@@ -25,7 +25,7 @@ MY_IP=$(hostname -i)
 
 
 # re-joining after failure?
-if [ -e $DATA_DIR/default.etcd ]; then
+if [ -e ${DATA_DIR}/etcd ]; then
     echo "Re-joining etcd member"
     member_id=$(cat $DATA_DIR/member_id)
 
@@ -35,7 +35,7 @@ if [ -e $DATA_DIR/default.etcd ]; then
         --listen-peer-urls http://${MY_IP}:${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
         --listen-client-urls http://${MY_IP}:${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
         --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_CLIENT_PORT} \
-        --data-dir $DATA_DIR/default.etcd
+        --data-dir ${DATA_DIR}/etcd
 fi
 
 # etcd-SET_ID
@@ -55,16 +55,16 @@ if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
     fi
 
     echo "Adding new member"
-    etcdctl member add ${HOSTNAME} http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} | grep "^ETCD_" > $DATA_DIR/new_member_envs
+    etcdctl member add ${HOSTNAME} http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} | grep "^ETCD_" > ${DATA_DIR}/new_member_envs
 
     if [ $? -ne 0 ]; then
         echo "Exiting"
-        rm -f $DATA_DIR/new_member_envs
+        rm -f ${DATA_DIR}/new_member_envs
         exit 1
     fi
 
-    cat $DATA_DIR/new_member_envs
-    source $DATA_DIR/new_member_envs
+    cat ${DATA_DIR}/new_member_envs
+    source ${DATA_DIR}/new_member_envs
 
     collect_member &
 
@@ -72,10 +72,10 @@ if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
         --listen-peer-urls http://${MY_IP}:${ETCD_PEER_PORT},http://127.0.0.1:${ETCD_PEER_PORT} \
         --listen-client-urls http://${MY_IP}:${ETCD_CLIENT_PORT},http://127.0.0.1:${ETCD_CLIENT_PORT} \
         --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_CLIENT_PORT} \
-        --data-dir $DATA_DIR/default.etcd \
         --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:${ETCD_PEER_PORT} \
         --initial-cluster ${ETCD_INITIAL_CLUSTER} \
-        --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE}
+        --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE} \
+        --data-dir ${DATA_DIR}/etcd
 fi
 
 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
@@ -102,7 +102,7 @@ exec etcd --name ${HOSTNAME} \
     --initial-cluster-token etcd-cluster-1 \
     --initial-cluster ${PEERS} \
     --initial-cluster-state new \
-    --data-dir $DATA_DIR/default.etcd
+    --data-dir $DATA_DIR/etcd
 """
 
 # join member

@@ -40,7 +40,7 @@ spec:
         - name: SET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
-          value: {{ .Values.DataDir }}
+          value: {{ .Values.service.dataDir }}
         - name: ETCD_PEER_PORT
           value: {{ .Values.service.peerPort | quote}}
         - name: ETCD_CLIENT_PORT
