@@ -1,4 +1,4 @@
-#!/usr/bin/env sh -ec
+#!/usr/bin/env sh
 
 EPS=""
 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do

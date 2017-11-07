@@ -40,20 +40,20 @@ spec:
         - name: SET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
-          value: {{ .Values.DataDir }}
+          value: {{ .Values.service.dataDir }}
         - name: ETCD_PEER_PORT
-          value: {{ .Values.PeerPort | quote}}
+          value: {{ .Values.service.peerPort | quote}}
         - name: ETCD_CLIENT_PORT
-          value: {{ .Values.ClientPort | quote}}
+          value: {{ .Values.service.clientPort | quote}}
         volumeMounts:
         - name: {{ .Values.storage.mount }}
           mountPath: {{ .Values.service.dataDir }}
         - name: config
-          mountPath: /etcd-cmd/etcd-start.sh
+          mountPath: /etcd-bin/etcd-start.sh
           subPath: etcd-start.sh
           readOnly: false
         - name: config
-          mountPath: /etcd-cmd/lifecycle-prestop.sh
+          mountPath: /etcd-bin/lifecycle-prestop.sh
           subPath: lifecycle-prestop.sh
           readOnly: false
         lifecycle:
@@ -61,10 +61,10 @@ spec:
             exec:
               command:
                 - "/bin/sh"
-                - "/etcd-cmd/lifecycle-prestop.sh"
+                - "/etcd-bin/lifecycle-prestop.sh"
         command:
           - "/bin/sh"
-          - "/etcd-cmd/etcd-start.sh"
+          - "/etcd-bin/etcd-start.sh"
       volumes:
       - name: config
         configMap:
