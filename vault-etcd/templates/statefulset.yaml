@@ -12,6 +12,8 @@ metadata:
 spec:
   serviceName: {{ template "vault-etcd.fullname" . }}
   replicas: {{ default 3 .Values.service.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: {{ template "vault-etcd.fullname" . }}
