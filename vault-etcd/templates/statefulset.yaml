@@ -22,6 +22,7 @@ spec:
         release: {{ .Release.Name }}
         component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
+      serviceAccountName: {{ template "vault-etcd.fullname" . }}
       terminationGracePeriodSeconds: {{ .Values.service.terminationGracePeriodSeconds }}
       containers:
       - name: {{ template "vault-etcd.fullname" . }}

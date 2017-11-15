@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create }}
+---
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "vault-etcd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.component }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "vault-etcd.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - ""
+{{- end }}
