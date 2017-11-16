@@ -31,9 +31,9 @@ test:
   image: quay.io/samsung_cnct/kraken-tools:v0.8
   stage: test
   variables:
-    NAMESPACE: ${APP_NAME}-test
-    RELEASE: ${APP_NAME}-test-${CI_PIPELINE_ID}
-    DEPLOYMENT: ${APP_NAME}-test-${CI_PIPELINE_ID}-${APP_NAME}
+    NAMESPACE: ${APP_NAME}-test-${CI_PIPELINE_ID}
+    RELEASE: ${APP_NAME}-${CI_PIPELINE_ID}
+    DEPLOYMENT: ${APP_NAME}-${CI_PIPELINE_ID}-${APP_NAME}
   before_script:
   - mkdir /root/.kube
   - echo ${TEST_KUBECONFIG} | base64 -d > /root/.kube/config
@@ -58,7 +58,7 @@ publish-beta:
 publish-prod:
   stage: publish
   only:
-    - /v[0-9]+\.[0-9]+\.[0-9]+-[0-9]+/
+    - /v[0-9]+\.[0-9]+\.[0-9]/
   script:
   - cd ${APP_NAME}
   - helm registry push ${CHART_REGISTRY_URI} -c prod
@@ -66,7 +66,7 @@ publish-prod:
 deploy-staging:
   stage: deploy
   only:
-    - /v[0-9]+\.[0-9]+\.[0-9]+-[0-9]+/
+    - /v[0-9]+\.[0-9]+\.[0-9]/
   variables:
     CHART_REGISTRY_CHANNEL: prod
     NAMESPACE: ${APP_NAME}-staging
@@ -77,4 +77,4 @@ deploy-staging:
   script:
   - cd ${APP_NAME}
   - export HELM_OPTS="--install --namespace ${NAMESPACE}"
-  - helm registry upgrade ${CHART_REGISTRY_URI}:${CHART_REGISTRY_CHANNEL} -- ${NAMESPACE} ${HELM_OPTS}
+  - helm registry upgrade ${CHART_REGISTRY_URI}:${CHART_REGISTRY_CHANNEL} -- ${APP_NAME} ${HELM_OPTS}
