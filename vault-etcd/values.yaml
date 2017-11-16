@@ -19,6 +19,8 @@ service:
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
 
+nodeSelector: {}
+
 storage:
   storageClass: "default"
   size: 1Gi
