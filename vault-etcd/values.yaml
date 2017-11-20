@@ -19,7 +19,8 @@ service:
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
 
-nodeSelector: {}
+#nodeSelector:
+#  nodepool: clusterNodes
 
 storage:
   storageClass: "default"
