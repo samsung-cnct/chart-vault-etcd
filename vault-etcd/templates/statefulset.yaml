@@ -22,11 +22,10 @@ spec:
         release: {{ .Release.Name }}
         component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
+      {{- if .Values.nodeSelector }}
+      nodeSelector: 
 {{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end}}
-        nodepool: clusterNodes
+      {{- end}}
       serviceAccountName: {{ template "vault-etcd.fullname" . }}
       terminationGracePeriodSeconds: {{ .Values.service.terminationGracePeriodSeconds }}
       containers:
