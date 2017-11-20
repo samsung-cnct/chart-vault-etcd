@@ -32,4 +32,5 @@ helm delete --purge etcd
 | storage.storageClass                              | Persistent Volume Storage Class. Default is "default", if set to null, no storageClassName spec is set automatically selecting default for cloud provider (gp2 on AWS, standard on GKE)    | "default"      |
 | storage.size                                      | The size of the volume to store etcd data on.                        | 1Gi                                            |
 | storage.mount                                     | Name of the mount to use for etcd data.                              | "ephemeral"                                    |
-| storage.accessModes                               | Array of accessmodes to set for the volume.                          | - ReadWriteOnce                                             |
+| storage.accessModes                               | Array of accessmodes to set for the volume.                          | - ReadWriteOnce                                |
+| nodeSelector.nodepool                             | Select which node to place your etcd pod(s)                          | clusterNodes                                   |
