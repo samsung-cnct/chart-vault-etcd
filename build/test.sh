@@ -1,16 +1,16 @@
 #!/bin/sh
 
-[ -z "$chart_name" ] && \
+[ -z "$CHART_NAME" ] && \
   {
-    echo >&2 "Var '$chart_name' is empty. Cannot continue."
+    echo >&2 "Var '$CHART_NAME' is empty. Cannot continue."
     exit 2
   }
 
-[ ! -d "${chart_name}" ] && \
+[ ! -d "${CHART_NAME}" ] && \
   {
-    echo >&2 "Directory for chart '$chart_name' does not exist."
+    echo >&2 "Directory for chart '$CHART_NAME' does not exist."
     exit 4
   }
 
-helm lint ${chart_name}
+helm lint ${CHART_NAME}
 
