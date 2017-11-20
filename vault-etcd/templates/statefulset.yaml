@@ -4,7 +4,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "vault-etcd.fullname" . }}
   labels:
-    app: {{ template "vault-etcd.name" .}}
+    app: {{ template "vault-etcd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.component }}"
     heritage: {{ .Release.Service }}
@@ -12,6 +12,8 @@ metadata:
 spec:
   serviceName: {{ template "vault-etcd.fullname" . }}
   replicas: {{ default 3 .Values.service.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: {{ template "vault-etcd.fullname" . }}
@@ -20,6 +22,12 @@ spec:
         release: {{ .Release.Name }}
         component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end}}
+        nodepool: clusterNodes
+      serviceAccountName: {{ template "vault-etcd.fullname" . }}
       terminationGracePeriodSeconds: {{ .Values.service.terminationGracePeriodSeconds }}
       containers:
       - name: {{ template "vault-etcd.fullname" . }}

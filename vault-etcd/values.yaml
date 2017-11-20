@@ -1,8 +1,12 @@
 component: "etcd"
 
+rbac:
+  create: true
+  apiVersion: v1beta1
+
 image:
   source: "quay.io/coreos/etcd"
-  tag: "v3.0.17"
+  tag: "v3.2.9"
   pullPolicy: "Always"
 
 service:
@@ -14,6 +18,8 @@ service:
   memory: "512Mi"
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
+
+nodeSelector: {}
 
 storage:
   storageClass: "default"
