@@ -5,6 +5,7 @@ variables:
   REGISTRY: quay.io
   REGISTRY_USER: samsung_cnct
   CHART_NAME: vault-etcd
+  PUBCHART_NAME: cyklops-${CHART_NAME}
   ROBOT_ACCOUNT: cyklops_vault_etcd_rw
   HELM_REGISTRY_IMAGE: quay.io/samsung_cnct/helm-registry-agent
   HELM_REGISTRY_VERSION: v0.7.4-helm_2.6
@@ -41,11 +42,11 @@ helm_publish_alpha:
   only:
     - master
   script:
-    - cd ${CHART_NAME} && helm registry push ${REGISTRY}/${REGISTRY_USER}/${CHART_NAME} -c alpha
+    - cd ${CHART_NAME} && helm registry push ${REGISTRY}/${REGISTRY_USER}/${PUBCHART_NAME} -c alpha
 
 helm_publish_tag:
   stage: publish
   only:
     - /v[0-9]+\.[0-9]+(\.[0-9]+[a-z]?)?/
   script:
-    - cd ${CHART_NAME} && helm registry push ${REGISTRY}/${REGISTRY_USER}/${CHART_NAME} -c stable
+    - cd ${CHART_NAME} && helm registry push ${REGISTRY}/${REGISTRY_USER}/${PUBCHART_NAME} -c stable
