@@ -11,16 +11,15 @@ image:
 
 service:
   name: etcdvault
-  peerPort: 2380
-  clientPort: 2379
+  peerPort: 3380
+  clientPort: 3379
   replicas: 3
   cpu: "100m"
   memory: "512Mi"
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
 
-#nodeSelector:
-#  nodepool: clusterNodes
+nodeSelector: {}
 
 storage:
   storageClass: "default"
