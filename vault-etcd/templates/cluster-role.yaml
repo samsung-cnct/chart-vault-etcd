@@ -11,10 +11,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "vault-etcd.fullname" . }}
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - persistentvolumeclaims
-    verbs:
-      - ""
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
 {{- end }}

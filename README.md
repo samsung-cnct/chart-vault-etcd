@@ -29,8 +29,67 @@ helm delete --purge etcd
 | service.memory                                    |                                                                      | "512Mi"                                        |
 | service.dataDir                                   |                                                                      | "/ephemeral"                                   |
 | service.terminationGracePeriodSeconds             | Amount of time given to the process to terminate before trying to forcefully terminate. We strongly suggest not to set this as 0.  | 30 |
+| service.tls.enable                                | Enable TLS on cluster, involves server and peer certs                | false                                          |
+| service.tls.etcd-server-tls                       | Name of secret containing server certs                               | etcd-server-tls                                |
+| service.tls.etcd-peer-tls                         | Name of secret containing peer certs                                 | etcd-peer-tls                                  |
+| service.tls.etcd-client-tls                       | Name of secret containing client certs                               | etcd-client-tls                                |
+| service.memory                                    |                                                                      | "512Mi"                                        |
+| service.memory                                    |                                                                      | "512Mi"                                        |
 | storage.storageClass                              | Persistent Volume Storage Class. Default is "default", if set to null, no storageClassName spec is set automatically selecting default for cloud provider (gp2 on AWS, standard on GKE)    | "default"      |
 | storage.size                                      | The size of the volume to store etcd data on.                        | 1Gi                                            |
 | storage.mount                                     | Name of the mount to use for etcd data.                              | "ephemeral"                                    |
 | storage.accessModes                               | Array of accessmodes to set for the volume.                          | - ReadWriteOnce                                |
 | nodeSelector.nodepool                             | Select which node to place your etcd pod(s)                          | clusterNodes                                   |
+
+
+
+## Enabling TLS 
+It is recommended that before creating a cluster that is secured by tls that a test cluster is deployed containing
+all the adjusted values that will be used (such as the cluster sizes). These choices will dictate what to assign 
+certain variables when it comes to deploying a full tls enabled etcd cluster with properly created certs.
+
+Cleanly remove your test cluster when you are ready, and follow the steps below to generate certs and then deploy your
+cluster.
+
+#### Generating Certs
+
+You will first assign values to the variables corresponding to specifics of your deployment:
+
+| Parameter                                         | Description                                                          | Default                                        |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| CLUSTER_SIZE                                      | Size of the etcd cluster                                             | 3                                              |
+| KUBERNETES_SECRET_SERVER                          | Name of the secret containting server certs, must match values file  | "etcd-server-tls"                              |
+| KUBERNETES_SECRET_PEER                            | Name of the secret containting peer certs, must match values file    | "etcd-peer-tls"                                |
+| KUBERNETES_SECRET_CLIENT                          | Name of the secret containting client certs, must match values file  | "etcd-client-tls"                              |
+| STATEFULSET_NAME                                  | Name of the statefulset you are deploying                            | "etcd-vault-etcd"                              |
+| HOSTNAME_PREFIX                                   | Name prefix of the statefulset you are deploying                     | "etcd-vault-etcd"                              |
+| NAMESPACE                                         | Namespaces of your deployment                                        | "default"                                      |
+| HOSTS_SERVER                                      | Init hosts for the server certificate (probably wont need to change) | "127.0.0.1"                                    |
+| HOSTS_CLIENT                                      | Init hosts for the client certificate (probably wont need to change) | "127.0.0.1"                                    |
+
+You will then run the following command:
+
+```
+./tls-generator/generate-certs.sh
+```
+
+producing certs in a folder named `etcd-certs` that contains the `ca-key.pem` file which should be stored safely away, and additional `*-key.pem` files for server, client, and peer certs.
+The script will remove any previously stored certs and will inject new ones to your cluster, assuming that kubectl is set up correctly and targets your kubernetes cluster. Once the script
+has terminated, and you stored your `ca-key.pem` in a safe place, you can now deploy your etcd cluster with `service.tls.enable=true` option and the additional `tls` values. 
+
+Verify that the cluster is healthy and your certs work by executing the following in any of the pods for the cluster that have come up:
+
+```
+etcdctl --endpoints "https://etcd-vault-etcd-0.etcd-vault-etcd:3379,https://etcd-vault-etcd-1.etcd-vault-etcd:3379,https://etcd-vault-e
+tcd-2.etcd-vault-etcd:3379" --ca-file=/etcd/certs/server/ca.pem --cert-file=/etcd/certs/server/server.pem --key-file=/etcd/certs/server/ser
+ver-key.pem cluster-health
+```
+
+whose response should be:
+
+```
+member 21881b5cae4be227 is healthy: got healthy result from https://etcd-vault-etcd-0.etcd-vault-etcd:3379
+member 38cc4533e9389bcf is healthy: got healthy result from https://etcd-vault-etcd-2.etcd-vault-etcd:3379
+member 3ea7877f5b314faa is healthy: got healthy result from https://etcd-vault-etcd-1.etcd-vault-etcd:3379
+cluster is healthy
+```

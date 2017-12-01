@@ -25,8 +25,7 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end}}
-        nodepool: clusterNodes
+    {{- end }}
       serviceAccountName: {{ template "vault-etcd.fullname" . }}
       terminationGracePeriodSeconds: {{ .Values.service.terminationGracePeriodSeconds }}
       containers:
@@ -45,14 +44,16 @@ spec:
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.service.replicas | quote }}
-        - name: SET_NAME
+        - name: STATEFULSET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
           value: {{ .Values.service.dataDir }}
-        - name: ETCD_PEER_PORT
-          value: {{ .Values.service.peerPort | quote}}
-        - name: ETCD_CLIENT_PORT
-          value: {{ .Values.service.clientPort | quote}}
+        - name: PEER_PORT
+          value: {{ .Values.service.peerPort | quote }}
+        - name: CLIENT_PORT
+          value: {{ .Values.service.clientPort | quote }}
+        - name: TLS_ENABLED
+          value: {{ .Values.service.tls.enable | quote }}
         volumeMounts:
         - name: {{ .Values.storage.mount }}
           mountPath: {{ .Values.service.dataDir }}
@@ -64,6 +65,14 @@ spec:
           mountPath: /etcd-bin/lifecycle-prestop.sh
           subPath: lifecycle-prestop.sh
           readOnly: false
+        {{- if .Values.service.tls.enable }}
+        - name: peer-tls
+          mountPath: "/etcd/certs/peer"
+          readOnly: true
+        - name: server-tls
+          mountPath: "/etcd/certs/server"
+          readOnly: true
+        {{- end }}
         lifecycle:
           preStop:
             exec:
@@ -77,6 +86,14 @@ spec:
       - name: config
         configMap:
           name: {{ template "vault-etcd.fullname" . }}
+      {{- if .Values.service.tls.enable }}
+      - name: peer-tls
+        secret:
+          secretName: {{ .Values.service.tls.peerSecret }}
+      - name: server-tls
+        secret:
+          secretName: {{ .Values.service.tls.serverSecret }}
+      {{- end }}
 
   volumeClaimTemplates:
   - metadata:
