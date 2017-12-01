@@ -38,7 +38,7 @@ def robot_secret          = "quay-robot-zabra-rw"
 
 The secrets defined here were created during the [Quay](./quay.md) configuration.
 
-## Edit the [Chart.yaml.in](../Chart.yaml.in) (solas-chart derived repositories only)
+## Edit the [Chart.yaml.in](../build/Chart.yaml.in) (solas-chart derived repositories only)
 
 * Edit the `name`, `description`, `home`, and `sources`. Do not edit the `version`.
 

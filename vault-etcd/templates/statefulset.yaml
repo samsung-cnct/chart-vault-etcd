@@ -47,13 +47,21 @@ spec:
         - name: STATEFULSET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
-          value: {{ .Values.service.dataDir }}
+          value: {{ .Values.service.dataDir | quote }}
         - name: PEER_PORT
           value: {{ .Values.service.peerPort | quote }}
         - name: CLIENT_PORT
           value: {{ .Values.service.clientPort | quote }}
         - name: TLS_ENABLED
           value: {{ .Values.service.tls.enable | quote }}
+        {{- if .Values.service.tls.enable }}
+        - name: CERTS_SERVER_PATH
+          value: {{ .Values.service.tls.serverSecret.path | quote }}
+        - name: CERTS_PEER_PATH
+          value: {{ .Values.service.tls.peerSecret.path | quote }}
+        - name: CERTS_CLIENT_PATH
+          value: {{ .Values.service.tls.clientSecret.path | quote }}
+        {{- end }}
         volumeMounts:
         - name: {{ .Values.storage.mount }}
           mountPath: {{ .Values.service.dataDir }}
@@ -66,11 +74,14 @@ spec:
           subPath: lifecycle-prestop.sh
           readOnly: false
         {{- if .Values.service.tls.enable }}
-        - name: peer-tls
-          mountPath: "/etcd/certs/peer"
-          readOnly: true
         - name: server-tls
-          mountPath: "/etcd/certs/server"
+          mountPath: {{ .Values.service.tls.serverSecret.path }}
+          readOnly: true
+        - name: peer-tls
+          mountPath: {{ .Values.service.tls.peerSecret.path }}
+          readOnly: true
+        - name: client-tls
+          mountPath: {{ .Values.service.tls.clientSecret.path }}
           readOnly: true
         {{- end }}
         lifecycle:
@@ -87,12 +98,15 @@ spec:
         configMap:
           name: {{ template "vault-etcd.fullname" . }}
       {{- if .Values.service.tls.enable }}
-      - name: peer-tls
-        secret:
-          secretName: {{ .Values.service.tls.peerSecret }}
       - name: server-tls
         secret:
-          secretName: {{ .Values.service.tls.serverSecret }}
+          secretName: {{ .Values.service.tls.serverSecret.name }}
+      - name: peer-tls
+        secret:
+          secretName: {{ .Values.service.tls.peerSecret.name }}
+      - name: client-tls
+        secret:
+          secretName: {{ .Values.service.tls.clientSecret.name }}
       {{- end }}
 
   volumeClaimTemplates:

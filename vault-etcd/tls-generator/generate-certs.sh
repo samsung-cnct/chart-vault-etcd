@@ -38,18 +38,45 @@ STATE="Washington"
 BITS=2048
 ALGO="rsa"
 
-# DEPLOYMENT VARS
-CLUSTER_SIZE=3
-PEER_CERTS=""
-KUBERNETES_SECRET_SERVER="etcd-server-tls"
-KUBERNETES_SECRET_PEER="etcd-peer-tls"
-KUBERNETES_SECRET_CLIENT="etcd-client-tls"
-STATEFULSET_NAME="etcd-vault-etcd"
-HOSTNAME_PREFIX="etcd-vault-etcd"
-NAMESPACE="vault2"
-HOSTS_SERVER="127.0.0.1"
-HOSTS_CLIENT="127.0.0.1"
+# DEPLOYMENT VARS (INIT VARS)
+GEN_PEER_CERTS=""
+GEN_HOSTS_SERVER="127.0.0.1"
+GEN_HOSTS_CLIENT="127.0.0.1"
 
+# DEPLOYMENT VARS (expect environment variables)
+if [ -z ${GEN_GEN_CLUSTER_SIZE+x} ]; then
+    GEN_CLUSTER_SIZE=3
+fi
+
+# namespace to deploy server and peer secrets
+if [ -z ${GEN_NAMESPACE+x} ]; then
+    GEN_NAMESPACE=""
+fi
+
+# array of namespaces to deploy client secrets
+if [ -z ${GEN_CLIENT_NAMESPACES+x} ]; then
+    GEN_CLIENT_NAMESPACES=( ${GEN_NAMESPACE} )
+fi
+
+# server secrets name
+if [ -z ${GEN_SERVER_SECRET_NAME+x} ]; then
+    GEN_SERVER_SECRET_NAME="etcd-server-tls"
+fi
+
+# peer secrets name
+if [ -z ${GEN_PEER_SECRET_NAME+x} ]; then
+    GEN_PEER_SECRET_NAME="etcd-peer-tls"
+fi
+
+# client secrets name
+if [ -z ${GEN_CLIENT_SECRET_NAME+x} ]; then
+    GEN_CLIENT_SECRET_NAME="etcd-client-tls"
+fi
+
+# statefulset name
+if [ -z ${GEN_STATEFULSET_NAME+x} ]; then
+    GEN_STATEFULSET_NAME="etcd-vault-etcd"
+fi
 
 function checkPREREQS() {
     PRE_REQS="cfssljson cfssl base64"
@@ -187,13 +214,13 @@ cat <<EOF > client.json
 EOF
 
 # Peer CSR
-for ((i = 0; i < CLUSTER_SIZE; i++)); do
-    HOSTS_SERVER="${HOSTS_SERVER},${HOSTNAME_PREFIX}-${i},${HOSTNAME_PREFIX}-${i}.${STATEFULSET_NAME}"
-    HOSTS_CLIENT="${HOSTS_CLIENT},${HOSTNAME_PREFIX}-${i},${HOSTNAME_PREFIX}-${i}.${STATEFULSET_NAME}"
+for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
+    GEN_HOSTS_SERVER="${GEN_HOSTS_SERVER},${GEN_STATEFULSET_NAME}-${i},${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME}"
+    GEN_HOSTS_CLIENT="${GEN_HOSTS_CLIENT},${GEN_STATEFULSET_NAME}-${i},${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME}"
 
-cat <<EOF > ${HOSTNAME_PREFIX}-${i}.json
+cat <<EOF > ${GEN_STATEFULSET_NAME}-${i}.json
 {
-    "CN": "${HOSTNAME_PREFIX}-${i}",
+    "CN": "${GEN_STATEFULSET_NAME}-${i}",
     "hosts": [""],
     "key": {
         "algo": "$ALGO",
@@ -229,19 +256,19 @@ cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
-    -hostname=${HOSTS_SERVER} \
+    -hostname=${GEN_HOSTS_SERVER} \
     -profile=client server.json | cfssljson -bare server
 
 # peer certs
-for ((i = 0; i < CLUSTER_SIZE; i++)); do
-    inf "generating peer cert: ${HOSTNAME_PREFIX}-${i} ..."
-    inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client ${HOSTNAME_PREFIX}-${i}.json | cfssljson -bare ${HOSTNAME_PREFIX}-${i}"
+for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
+    inf "generating peer cert: ${GEN_STATEFULSET_NAME}-${i} ..."
+    inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}"
     cfssl gencert \
         -ca=ca.pem \
         -ca-key=ca-key.pem \
         -config=ca-config.json \
-        -hostname="${HOSTNAME_PREFIX}-${i}","${HOSTNAME_PREFIX}-${i}.${STATEFULSET_NAME}","127.0.0.1" \
-        -profile=client ${HOSTNAME_PREFIX}-${i}.json | cfssljson -bare ${HOSTNAME_PREFIX}-${i}
+        -hostname="${GEN_STATEFULSET_NAME}-${i}","${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME}","127.0.0.1" \
+        -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}
 done
 
 # client certs
@@ -251,30 +278,49 @@ cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
-    -hostname=${HOSTS_CLIENT} \
+    -hostname=${GEN_HOSTS_CLIENT} \
     -profile=client client.json | cfssljson -bare client
 
 
 # clean out old secrets
-kubectl -n ${NAMESPACE} delete secret ${KUBERNETES_SECRET_PEER} || true
-kubectl -n ${NAMESPACE} delete secret ${KUBERNETES_SECRET_SERVER} || true
-kubectl -n ${NAMESPACE} delete secret ${KUBERNETES_SECRET_CLIENT} || true
+kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_PEER_SECRET_NAME} || true
+kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_SERVER_SECRET_NAME} || true
+kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_CLIENT_SECRET_NAME} || true
 
 # add new secrets
-for ((i = 0; i < CLUSTER_SIZE; i++)); do
-    PEER_CERTS="${PEER_CERTS} --from-file=${HOSTNAME_PREFIX}-${i}.pem --from-file=${HOSTNAME_PREFIX}-${i}-key.pem"
+for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
+    PEER_CERTS="${PEER_CERTS} --from-file=${GEN_STATEFULSET_NAME}-${i}.pem --from-file=${GEN_STATEFULSET_NAME}-${i}-key.pem"
 done
 
-kubectl -n ${NAMESPACE} create secret generic ${KUBERNETES_SECRET_PEER} \
+inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
     --from-file=ca.pem \
-    ${PEER_CERTS}
+    ${PEER_CERTS}"
+warn "if namespaces does not exist, secret creation will be skipped"
 
-kubectl -n ${NAMESPACE} create secret generic ${KUBERNETES_SECRET_SERVER} \
+kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
+    --from-file=ca.pem \
+    ${PEER_CERTS}  || true
+
+inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
     --from-file=ca.pem \
     --from-file=server.pem \
-    --from-file=server-key.pem
+    --from-file=server-key.pem"
+warn "if namespaces does not exist, secret creation will be skipped"
 
-kubectl -n ${NAMESPACE} create secret generic ${KUBERNETES_SECRET_CLIENT} \
+kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
+    --from-file=ca.pem \
+    --from-file=server.pem \
+    --from-file=server-key.pem || true
+
+for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
+inf "kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
     --from-file=ca.pem \
     --from-file=client.pem \
-    --from-file=client-key.pem
+    --from-file=client-key.pem"
+warn "if namespaces does not exist, secret creation will be skipped"
+
+kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
+    --from-file=ca.pem \
+    --from-file=client.pem \
+    --from-file=client-key.pem || true
+done

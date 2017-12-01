@@ -30,9 +30,12 @@ helm delete --purge etcd
 | service.dataDir                                   |                                                                      | "/ephemeral"                                   |
 | service.terminationGracePeriodSeconds             | Amount of time given to the process to terminate before trying to forcefully terminate. We strongly suggest not to set this as 0.  | 30 |
 | service.tls.enable                                | Enable TLS on cluster, involves server and peer certs                | false                                          |
-| service.tls.etcd-server-tls                       | Name of secret containing server certs                               | etcd-server-tls                                |
-| service.tls.etcd-peer-tls                         | Name of secret containing peer certs                                 | etcd-peer-tls                                  |
-| service.tls.etcd-client-tls                       | Name of secret containing client certs                               | etcd-client-tls                                |
+| service.tls.serverSecret.name                     | Name of secret containing server certs                               | etcd-server-tls                                |
+| service.tls.serverSecret.path                     | Path of secret containing server certs                               | /etcd/certs/server                             |
+| service.tls.peerSecret.name                       | Name of secret containing peer certs                                 | etcd-peer-tls                                  |
+| service.tls.peerSecret.path                       | Path of secret containing peer certs                                 | /etcd/certs/peer                               |
+| service.tls.clientSecret.name                     | Name of secret containing client certs (not consumed by etcd)        | etcd-client-tls                                |
+| service.tls.clientSecret.path                     | Path of secret containing client certs (not consumed by etcd)        | /etcd/certs/client                             |
 | service.memory                                    |                                                                      | "512Mi"                                        |
 | service.memory                                    |                                                                      | "512Mi"                                        |
 | storage.storageClass                              | Persistent Volume Storage Class. Default is "default", if set to null, no storageClassName spec is set automatically selecting default for cloud provider (gp2 on AWS, standard on GKE)    | "default"      |
@@ -57,15 +60,15 @@ You will first assign values to the variables corresponding to specifics of your
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| CLUSTER_SIZE                                      | Size of the etcd cluster                                             | 3                                              |
-| KUBERNETES_SECRET_SERVER                          | Name of the secret containting server certs, must match values file  | "etcd-server-tls"                              |
-| KUBERNETES_SECRET_PEER                            | Name of the secret containting peer certs, must match values file    | "etcd-peer-tls"                                |
-| KUBERNETES_SECRET_CLIENT                          | Name of the secret containting client certs, must match values file  | "etcd-client-tls"                              |
-| STATEFULSET_NAME                                  | Name of the statefulset you are deploying                            | "etcd-vault-etcd"                              |
-| HOSTNAME_PREFIX                                   | Name prefix of the statefulset you are deploying                     | "etcd-vault-etcd"                              |
-| NAMESPACE                                         | Namespaces of your deployment                                        | "default"                                      |
-| HOSTS_SERVER                                      | Init hosts for the server certificate (probably wont need to change) | "127.0.0.1"                                    |
-| HOSTS_CLIENT                                      | Init hosts for the client certificate (probably wont need to change) | "127.0.0.1"                                    |
+| GEN_CLUSTER_SIZE                                  | Size of the etcd cluster                                             | 3                                              |
+| GEN_KUBERNETES_SECRET_SERVER                      | Name of the secret containting server certs, must match values file  | "etcd-server-tls"                              |
+| GEN_KUBERNETES_SECRET_PEER                        | Name of the secret containting peer certs, must match values file    | "etcd-peer-tls"                                |
+| GEN_KUBERNETES_SECRET_CLIENT                      | Name of the secret containting client certs, must match values file  | "etcd-client-tls"                              |
+| GEN_STATEFULSET_NAME                              | Name of the statefulset you are deploying                            | "etcd-vault-etcd"                              |
+| GEN_NAMESPACE                                     | Namespaces of your deployment                                        | "gp2"                                      |
+| GEN_CLIENT_NAMESPACES                             | Bash array of namespaces of clients that needs etcd certs.           | ("vault-staging")                                      |
+| GEN_HOSTS_SERVER                                  | Init hosts for the server certificate (probably wont need to change) | "127.0.0.1"                                    |
+| GEN_HOSTS_CLIENT                                  | Init hosts for the client certificate (probably wont need to change) | "127.0.0.1"                                    |
 
 You will then run the following command:
 

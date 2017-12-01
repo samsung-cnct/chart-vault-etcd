@@ -31,13 +31,13 @@ if [ -n "${TLS_ENABLED}+x" ] && [ "${TLS_ENABLED}" = true ]; then
     HTTP_SCHEME=https
     FLAGS_TLS_OPTIONS="""
         --client-cert-auth \
-        --trusted-ca-file=/etcd/certs/server/ca.pem \
-        --cert-file=/etcd/certs/server/server.pem \
-        --key-file=/etcd/certs/server/server-key.pem \
+        --trusted-ca-file=${CERTS_SERVER_PATH}/ca.pem \
+        --cert-file=${CERTS_SERVER_PATH}/server.pem \
+        --key-file=${CERTS_SERVER_PATH}/server-key.pem \
         --peer-client-cert-auth \
-        --peer-trusted-ca-file=/etcd/certs/peer/ca.pem \
-        --peer-cert-file=/etcd/certs/peer/${HOSTNAME}.pem \
-        --peer-key-file=/etcd/certs/peer/${HOSTNAME}-key.pem
+        --peer-trusted-ca-file=${CERTS_PEER_PATH}/ca.pem \
+        --peer-cert-file=${CERTS_PEER_PATH}/${HOSTNAME}.pem \
+        --peer-key-file=${CERTS_PEER_PATH}/${HOSTNAME}-key.pem
     """
 fi
 
