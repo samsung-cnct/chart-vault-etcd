@@ -6,7 +6,7 @@ rbac:
 
 image:
   source: "quay.io/coreos/etcd"
-  tag: "v3.2.9"
+  tag: "v3.2.10"
   pullPolicy: "Always"
 
 service:
@@ -18,6 +18,11 @@ service:
   memory: "512Mi"
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
+  tls:
+    enable: true
+    serverSecret: etcd-server-tls
+    peerSecret: etcd-peer-tls
+    clientSecret: etcd-client-tls
 
 nodeSelector: {}
 

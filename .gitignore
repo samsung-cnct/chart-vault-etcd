@@ -1,3 +1,9 @@
+# ignore the generated Chart.yaml file
+vault-etcd/Chart.yaml
+
+# ignore the certs generation piece
+etcd-certs
+
 # Binaries for programs and plugins
 *.exe
 *.dll
@@ -35,3 +41,4 @@ docs/_build/
 
 # Mac
 .DS_Store
+
