@@ -3,20 +3,20 @@
 # store member id into PVC for later member replacement
 collect_member() {
     while ! etcdctl member list &>/dev/null; do sleep 1; done
-    etcdctl member list | grep ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1 > $DATA_DIR/member_id
+    etcdctl member list | grep ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1 > $DATA_DIR/member_id
     exit 0
 }
 
 eps() {
     EPS=""
     for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-        EPS="${EPS}${EPS:+,}${HTTP_SCHEME}://${STATEFULESET_NAME}-${i}.${STATEFULESET_NAME}:${CLIENT_PORT}"
+        EPS="${EPS}${EPS:+,}${HTTP_SCHEME}://${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}:${CLIENT_PORT}"
     done
     echo ${EPS}
 }
 
 member_hash() {
-    etcdctl member list | grep ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1
+    etcdctl member list | grep ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT} | cut -d':' -f1 | cut -d'[' -f1
 }
 
 
@@ -48,11 +48,11 @@ if [ -e ${DATA_DIR}/etcd ]; then
     member_id=$(cat $DATA_DIR/member_id)
 
     # re-join member
-    ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT}
+    ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT}
     exec etcd --name ${HOSTNAME} \
         --listen-peer-urls ${HTTP_SCHEME}://${MY_IP}:${PEER_PORT},${HTTP_SCHEME}://127.0.0.1:${PEER_PORT} \
         --listen-client-urls ${HTTP_SCHEME}://${MY_IP}:${CLIENT_PORT},${HTTP_SCHEME}://127.0.0.1:${CLIENT_PORT} \
-        --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${CLIENT_PORT} \
+        --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${CLIENT_PORT} \
         --data-dir ${DATA_DIR}/etcd ${FLAGS_TLS_OPTIONS}
 fi
 
@@ -73,7 +73,7 @@ if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
     fi
 
     echo "Adding new member"
-    etcdctl member add ${HOSTNAME} ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT} | grep "^ETCD_" > ${DATA_DIR}/new_member_envs
+    etcdctl member add ${HOSTNAME} ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT} | grep "^ETCD_" > ${DATA_DIR}/new_member_envs
 
     if [ $? -ne 0 ]; then
         echo "Exiting"
@@ -89,8 +89,8 @@ if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
     exec etcd --name ${HOSTNAME} \
         --listen-peer-urls ${HTTP_SCHEME}://${MY_IP}:${PEER_PORT},${HTTP_SCHEME}://127.0.0.1:${PEER_PORT} \
         --listen-client-urls ${HTTP_SCHEME}://${MY_IP}:${CLIENT_PORT},${HTTP_SCHEME}://127.0.0.1:${CLIENT_PORT} \
-        --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${CLIENT_PORT} \
-        --initial-advertise-peer-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT} \
+        --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${CLIENT_PORT} \
+        --initial-advertise-peer-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT} \
         --initial-cluster ${ETCD_INITIAL_CLUSTER} \
         --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE} \
         --data-dir ${DATA_DIR}/etcd ${FLAGS_TLS_OPTIONS}
@@ -98,25 +98,25 @@ fi
 
 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
     while true; do
-        echo "Waiting for ${STATEFULESET_NAME}-${i}.${STATEFULESET_NAME} to come up"
-        ping -W 1 -c 1 ${STATEFULESET_NAME}-${i}.${STATEFULESET_NAME} > /dev/null && break
+        echo "Waiting for ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME} to come up"
+        ping -W 1 -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME} > /dev/null && break
         sleep 1s
     done
 done
 
 PEERS=""
 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-    PEERS="${PEERS}${PEERS:+,}${STATEFULESET_NAME}-${i}=${HTTP_SCHEME}://${STATEFULESET_NAME}-${i}.${STATEFULESET_NAME}:${PEER_PORT}"
+    PEERS="${PEERS}${PEERS:+,}${STATEFULSET_NAME}-${i}=${HTTP_SCHEME}://${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}:${PEER_PORT}"
 done
 
 collect_member &
 
 cmd="""
 exec etcd --name ${HOSTNAME} \
-    --initial-advertise-peer-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${PEER_PORT} \
+    --initial-advertise-peer-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${PEER_PORT} \
     --listen-peer-urls ${HTTP_SCHEME}://${MY_IP}:${PEER_PORT},${HTTP_SCHEME}://127.0.0.1:${PEER_PORT} \
     --listen-client-urls ${HTTP_SCHEME}://${MY_IP}:${CLIENT_PORT},${HTTP_SCHEME}://127.0.0.1:${CLIENT_PORT} \
-    --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULESET_NAME}:${CLIENT_PORT} \
+    --advertise-client-urls ${HTTP_SCHEME}://${HOSTNAME}.${STATEFULSET_NAME}:${CLIENT_PORT} \
     --initial-cluster-token etcd-cluster-1 \
     --initial-cluster ${PEERS} \
     --initial-cluster-state new \

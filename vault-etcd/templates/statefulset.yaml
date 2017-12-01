@@ -44,7 +44,7 @@ spec:
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.service.replicas | quote }}
-        - name: STATEFULESET_NAME
+        - name: STATEFULSET_NAME
           value: {{ template "vault-etcd.fullname" . }}
         - name: DATA_DIR
           value: {{ .Values.service.dataDir }}
