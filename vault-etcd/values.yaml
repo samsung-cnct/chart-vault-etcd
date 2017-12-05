@@ -11,23 +11,29 @@ image:
 
 service:
   name: etcdvault
-  peerPort: 3380
-  clientPort: 3379
+  peerPort: 2380
+  clientPort: 2379
   replicas: 3
   cpu: "100m"
   memory: "512Mi"
   dataDir: "/ephemeral"
   terminationGracePeriodSeconds: 30
   tls:
-    enable: true
-    serverSecret: etcd-server-tls
-    peerSecret: etcd-peer-tls
-    clientSecret: etcd-client-tls
+    enable: false
+    serverSecret:
+      name: etcd-server-tls
+      path: "/etcd/certs/server"
+    peerSecret:
+      name: etcd-peer-tls
+      path: "/etcd/certs/peer"
+    clientSecret:
+      name: etcd-client-tls
+      path: "/etcd/certs/client"
 
 nodeSelector: {}
 
 storage:
-  storageClass: "default"
+  storageClass: "gp2"
   size: 1Gi
   mount: "ephemeral"
   accessModes:
