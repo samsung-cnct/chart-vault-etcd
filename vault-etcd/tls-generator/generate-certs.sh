@@ -44,7 +44,7 @@ GEN_HOSTS_SERVER="127.0.0.1"
 GEN_HOSTS_CLIENT="127.0.0.1"
 
 # DEPLOYMENT VARS (expect environment variables)
-if [ -z ${GEN_GEN_CLUSTER_SIZE+x} ]; then
+if [ -z ${GEN_CLUSTER_SIZE+x} ]; then
     GEN_CLUSTER_SIZE=3
 fi
 
@@ -79,7 +79,7 @@ if [ -z ${GEN_STATEFULSET_NAME+x} ]; then
 fi
 
 function checkPREREQS() {
-    PRE_REQS="cfssljson cfssl base64"
+    PRE_REQS="cfssljson cfssl"
 
     for pr in $PRE_REQS
     do
