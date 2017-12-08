@@ -5,7 +5,8 @@ variables:
   REGISTRY_HOST: quay.io
   REGISTRY_ORG: samsung_cnct
   CHART_NAME: vault-etcd
-  CHART_REGISTRY_URI: ${REGISTRY_HOST}/${REGISTRY_ORG}/${CHART_NAME}
+  REGISTRY_CHART_NAME: cyklops-vault-etcd
+  CHART_REGISTRY_URI: ${REGISTRY_HOST}/${REGISTRY_ORG}/${REGISTRY_CHART_NAME}
   HELM_REGISTRY_IMAGE: quay.io/samsung_cnct/helm-registry-agent
   HELM_REGISTRY_VERSION: v0.7.4-helm_2.6
 
