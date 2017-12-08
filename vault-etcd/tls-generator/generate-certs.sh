@@ -101,13 +101,11 @@ EXIT_CODE=$(checkPREREQS)
 DIR_PATH="${my_dir}/../etcd-certs"
 
 # make sure the DIR_PATH exists.
-[[ ! -d "$DIR_PATH" ]] && {
-    mkdir -p $DIR_PATH || \
-      echo >&2 "unable to make output directory: '$DIR_PATH'" && exit 1
-  }
+if [ ! -d "$DIR_PATH" ]; then
+    mkdir -p $DIR_PATH
+fi
 
 cd $DIR_PATH
-
 
 if [[ ! -e ca-key.pem ]]; then
 ## generate the CA config

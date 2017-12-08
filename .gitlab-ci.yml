@@ -93,7 +93,8 @@ deploy-staging:
   - apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev
   - go get -u github.com/cloudflare/cfssl/cmd/cfssl
   - go get -u github.com/cloudflare/cfssl/cmd/cfssljson
-  - ./${APP_NAME}/tls-generator/generate-certs.sh
+  - cd ${APP_NAME}
+  - ./tls-generator/generate-certs.sh
 
   script:
   - cd ${APP_NAME}
