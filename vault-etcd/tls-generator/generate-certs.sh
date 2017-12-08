@@ -287,17 +287,17 @@ kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_CLIENT_SECRET_NAME} || true
 
 # add new secrets
 for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
-    PEER_CERTS="${PEER_CERTS} --from-file=${GEN_STATEFULSET_NAME}-${i}.pem --from-file=${GEN_STATEFULSET_NAME}-${i}-key.pem"
+    GEN_PEER_CERTS="${GEN_PEER_CERTS} --from-file=${GEN_STATEFULSET_NAME}-${i}.pem --from-file=${GEN_STATEFULSET_NAME}-${i}-key.pem"
 done
 
 inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
     --from-file=ca.pem \
-    ${PEER_CERTS}"
+    ${GEN_PEER_CERTS}"
 warn "if namespaces does not exist, secret creation will be skipped"
 
 kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
     --from-file=ca.pem \
-    ${PEER_CERTS}  || true
+    ${GEN_PEER_CERTS}  || true
 
 inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
     --from-file=ca.pem \
