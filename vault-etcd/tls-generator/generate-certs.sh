@@ -284,10 +284,16 @@ cfssl gencert \
 
 
 # clean out old secrets
+inf "removing old secrets..."
+inf "... removing from namespaces: ${GEN_NAMESPACE}, secret: ${GEN_PEER_SECRET_NAME}"
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_PEER_SECRET_NAME} || true
+inf "... removing from namespaces: ${GEN_NAMESPACE}, secret: ${GEN_SERVER_SECRET_NAME}"
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_SERVER_SECRET_NAME} || true
+inf "... removing from namespaces: ${GEN_NAMESPACE}, secret: ${GEN_CLIENT_SECRET_NAME}"
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_CLIENT_SECRET_NAME} || true
+inf "... removing client secrets..."
 for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
+    inf "... removing from namespaces: ${ns}, secret: ${GEN_CLIENT_SECRET_NAME}"
     kubectl -n ${ns} delete secret ${GEN_CLIENT_SECRET_NAME} || true
 done
 
