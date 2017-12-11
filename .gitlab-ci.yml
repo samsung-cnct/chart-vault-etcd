@@ -90,13 +90,15 @@ deploy-staging:
   - export PATH=$PATH:/usr/local/go/bin:/go/bin
   - export GOPATH=/go
   - mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
-  - apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev
+  - apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev curl
   - go get -u github.com/cloudflare/cfssl/cmd/cfssl
   - go get -u github.com/cloudflare/cfssl/cmd/cfssljson
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
   - cd ${APP_NAME}
   - ./tls-generator/generate-certs.sh
 
   script:
-  - cd ${APP_NAME}
   - export HELM_OPTS="--install --namespace ${NAMESPACE}"
   - helm registry upgrade ${CHART_REGISTRY_URI}:${CHART_REGISTRY_CHANNEL} -- ${APP_NAME} ${HELM_OPTS}
