@@ -287,6 +287,9 @@ cfssl gencert \
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_PEER_SECRET_NAME} || true
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_SERVER_SECRET_NAME} || true
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_CLIENT_SECRET_NAME} || true
+for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
+    kubectl -n ${ns} delete secret ${GEN_CLIENT_SECRET_NAME} || true
+done
 
 # add new secrets
 for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
