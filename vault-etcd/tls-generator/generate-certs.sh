@@ -300,9 +300,7 @@ kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
     ${GEN_PEER_CERTS}  || true
 
 inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
-    --from-file=ca.pem \
-    --from-file=server.pem \
-    --from-file=server-key.pem"
+    --from-file=ca.pem --from-file=server.pem --from-file=server-key.pem"
 warn "if namespaces does not exist, secret creation will be skipped"
 
 kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
@@ -312,9 +310,7 @@ kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
 
 for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
 inf "kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
-    --from-file=ca.pem \
-    --from-file=client.pem \
-    --from-file=client-key.pem"
+    --from-file=ca.pem --from-file=client.pem --from-file=client-key.pem"
 warn "if namespaces does not exist, secret creation will be skipped"
 
 kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
