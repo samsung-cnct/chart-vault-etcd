@@ -54,8 +54,11 @@ if [ -z ${GEN_NAMESPACE+x} ]; then
 fi
 
 # array of namespaces to deploy client secrets
+# expecting a space separated list, we convert to array here.
 if [ -z ${GEN_CLIENT_NAMESPACES+x} ]; then
     GEN_CLIENT_NAMESPACES=( ${GEN_NAMESPACE} )
+else
+    GEN_CLIENT_NAMESPACES=($GEN_CLIENT_NAMESPACES)
 fi
 
 # server secrets name
