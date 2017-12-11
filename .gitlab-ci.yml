@@ -75,7 +75,7 @@ deploy-staging:
     NAMESPACE: ${APP_NAME}-staging
     GEN_CLUSTER_SIZE: 3
     GEN_NAMESPACE: ${APP_NAME}-staging
-    GEN_CLIENT_NAMESPACES: ( ${GEN_NAMESPACE} "vault-staging" )
+    GEN_CLIENT_NAMESPACES: [${GEN_NAMESPACE}, "vault-staging" ]
     GEN_SERVER_SECRET_NAME: etcd-server-tls
     GEN_PEER_SECRET_NAME: etcd-peer-tls
     GEN_CLIENT_SECRET_NAME: etcd-client-tls
