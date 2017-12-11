@@ -101,5 +101,5 @@ deploy-staging:
   - ./tls-generator/generate-certs.sh
 
   script:
-  - export HELM_OPTS="--install --namespace ${NAMESPACE}"
+  - export HELM_OPTS="--install --namespace ${NAMESPACE} --set service.tls.enable=true "
   - helm registry upgrade ${CHART_REGISTRY_URI}:${CHART_REGISTRY_CHANNEL} -- ${APP_NAME} ${HELM_OPTS}
