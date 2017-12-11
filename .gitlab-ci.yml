@@ -93,7 +93,7 @@ deploy-staging:
   - apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev curl
   - go get -u github.com/cloudflare/cfssl/cmd/cfssl
   - go get -u github.com/cloudflare/cfssl/cmd/cfssljson
-  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - curl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - cd ${APP_NAME}
