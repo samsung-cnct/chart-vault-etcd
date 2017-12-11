@@ -96,7 +96,7 @@ deploy-staging:
   - go get -u github.com/cloudflare/cfssl/cmd/cfssljson
   - wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
-  - sudo mv ./kubectl /usr/local/bin/kubectl
+  - mv ./kubectl /usr/local/bin/kubectl
   - cd ${APP_NAME}
   - ./tls-generator/generate-certs.sh
 
