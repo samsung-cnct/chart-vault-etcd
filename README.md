@@ -15,36 +15,34 @@ helm delete --purge etcd
 
 ## Configuration
 
-| Parameter                                           | Description                                                          | Default                                        |
-| --------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `rbac.create`                                       | Install rbac resources                                               | true                                           |
-| `rbac.apiVersion`                                   | Define the version of rbac resources to use.                         | "v1beta1"                                      |
-| `image.serviceAccountName`                          | Name of the service account resource when rbac is enabled            | "vault-etcd-sa"                          |
-| `image.source`                                      | Docker Image to use for etcd, should have etcd and etcdctl.          | "quay.io/coreos/etcd"                          |
-| `image.tag`                                         | Version of the docker image to use.                                  | "v3.2.9"                                       |
-| `image.pullPolicy`                                  | Pull policy for the docker image.                                    | "Always"                                       |
-| `service.name`                                      | Name of the service                                                  | etcdvault                                      |
-| `service.peerPort`                                  | Port to use for peer to peer communication, traditionally 2380       | 3380                                           |
-| `service.clientPort`                                | Port used by a client , traditionally 2379                           | 3379                                           |
-| `service.replicas`                                  | Number of etcd instances to use                                      | 5                                              |
-| `service.cpu`                                       |                                                                      | "100m"                                         |
-| `service.memory`                                    |                                                                      | "512Mi"                                        |
-| `service.dataDir`                                   |                                                                      | "/ephemeral"                                   |
-| `service.terminationGracePeriodSeconds`             | Amount of time given to the process to terminate before trying to forcefully terminate. We strongly suggest not to set this as 0.  | 30 |
-| `service.tls.enable`                                | Enable TLS on cluster, involves server and peer certs                | false                                          |
-| `service.tls.serverSecret.name`                     | Name of secret containing server certs                               | etcd-server-tls                                |
-| `service.tls.serverSecret.path`                     | Path of secret containing server certs                               | /etcd/certs/server                             |
-| `service.tls.peerSecret.name`                       | Name of secret containing peer certs                                 | etcd-peer-tls                                  |
-| `service.tls.peerSecret.path`                       | Path of secret containing peer certs                                 | /etcd/certs/peer                               |
-| `service.tls.clientSecret.name`                     | Name of secret containing client certs (not consumed by etcd)        | etcd-client-tls                                |
-| `service.tls.clientSecret.path`                     | Path of secret containing client certs (not consumed by etcd)        | /etcd/certs/client                             |
-| `service.memory`                                    |                                                                      | "512Mi"                                        |
-| `service.memory`                                    |                                                                      | "512Mi"                                        |
-| `storage.storageClass`                              | Persistent Volume Storage Class. Default is "default", if set to null, no storageClassName spec is set automatically selecting default for cloud provider (gp2 on AWS, standard on GKE)    | "default"      |
-| `storage.size`                                      | The size of the volume to store etcd data on.                        | 1Gi                                            |
-| `storage.mount`                                     | Name of the mount to use for etcd data.                              | "ephemeral"                                    |
-| `storage.accessModes`                               | Array of accessmodes to set for the volume.                          | - ReadWriteOnce                                |
-| `nodeSelector.nodepool`                             | Select which node to place your etcd pod(s)                          | clusterNodes                                   |
+| Parameter                                           | Description                                                          | Default                                          |
+| --------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| `rbac.create`                                       | Install rbac resources                                               | `true`                                           |
+| `rbac.apiVersion`                                   | Define the version of rbac resources to use.                         | `"v1beta1"`                                      |
+| `image.serviceAccountName`                          | Name of the service account resource when rbac is enabled            | `"vault-etcd-sa"`                                |
+| `image.source`                                      | Docker Image to use for etcd, should have etcd and etcdctl.          | `"quay.io/coreos/etcd"`                          |
+| `image.tag`                                         | Version of the docker image to use.                                  | `"v3.2.10"`                                      |
+| `image.pullPolicy`                                  | Pull policy for the docker image.                                    | `"Always"`                                       |
+| `service.name`                                      | Name of the service                                                  | `etcdvault`                                      |
+| `service.peerPort`                                  | Port to use for peer to peer communication, traditionally 2380       | `3380`                                           |
+| `service.clientPort`                                | Port used by a client , traditionally 2379                           | `3379`                                           |
+| `service.replicas`                                  | Number of etcd instances to use                                      | `5`                                              |
+| `service.cpu`                                       | CPU to allocate to service                                           | `"100m"`                                         |
+| `service.memory`                                    | Memory to allocate to service                                        | `"512Mi"`                                        |
+| `service.dataDir`                                   | Mount point where to store etcd data                                 | `"/ephemeral"`                                   |
+| `service.terminationGracePeriodSeconds`             | Amount of time given to the process to terminate before trying to forcefully terminate. We strongly suggest not to set this as 0.  | `30` |
+| `service.tls.enable`                                | Enable TLS on cluster, involves server and peer certs                | `false`                                          |
+| `service.tls.serverSecret.name`                     | Name of secret containing server certs                               | `etcd-server-tls`                                |
+| `service.tls.serverSecret.path`                     | Path of secret containing server certs                               | `/etcd/certs/server`                             |
+| `service.tls.peerSecret.name`                       | Name of secret containing peer certs                                 | `etcd-peer-tls`                                  |
+| `service.tls.peerSecret.path`                       | Path of secret containing peer certs                                 | `/etcd/certs/peer`                               |
+| `service.tls.clientSecret.name`                     | Name of secret containing client certs (not consumed by etcd)        | `etcd-client-tls`                                |
+| `service.tls.clientSecret.path`                     | Path of secret containing client certs (not consumed by etcd)        | `/etcd/certs/client`                             |
+| `storage.storageClass`                              | Persistent Volume Storage Class. Default is "default", if set to null, no storageClassName spec is set automatically selecting default for cloud provider (gp2 on AWS, standard on GKE)    | `"gp2"`      |
+| `storage.size`                                      | The size of the volume to store etcd data on.                        | `1Gi`                                            |
+| `storage.mount`                                     | Name of the mount to use for etcd data.                              | `"ephemeral"`                                    |
+| `storage.accessModes`                               | Array of accessmodes to set for the volume.                          | `ReadWriteOnce`                                  |
+| `nodeSelector.nodepool`                             | Select which node to place your etcd pod(s)                          | `clusterNodes`                                   |
 
 
 
@@ -60,17 +58,17 @@ cluster.
 
 You will first assign values to the variables corresponding to specifics of your deployment:
 
-| Parameter                                           | Description                                                          | Default                                        |
-| --------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `GEN_CLUSTER_SIZE`                                  | Size of the etcd cluster                                             | 3                                              |
-| `GEN_KUBERNETES_SECRET_SERVER`                      | Name of the secret containting server certs, must match values file  | "etcd-server-tls"                              |
-| `GEN_KUBERNETES_SECRET_PEER`                        | Name of the secret containting peer certs, must match values file    | "etcd-peer-tls"                                |
-| `GEN_KUBERNETES_SECRET_CLIENT`                      | Name of the secret containting client certs, must match values file  | "etcd-client-tls"                              |
-| `GEN_STATEFULSET_NAME`                              | Name of the statefulset you are deploying                            | "etcd-vault-etcd"                              |
-| `GEN_NAMESPACE`                                     | Namespaces of your deployment                                        | "gp2"                                          |
-| `GEN_CLIENT_NAMESPACES`                             | Bash array of namespaces of clients that needs etcd certs.           | ("vault-staging")                              |
-| `GEN_HOSTS_SERVER`                                  | Init hosts for the server certificate (probably wont need to change) | "127.0.0.1"                                    |
-| `GEN_HOSTS_CLIENT`                                  | Init hosts for the client certificate (probably wont need to change) | "127.0.0.1"                                    |
+| Parameter                                           | Description                                                          | Default                                          |
+| --------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| `GEN_CLUSTER_SIZE`                                  | Size of the etcd cluster                                             | `3`                                              |
+| `GEN_KUBERNETES_SECRET_SERVER`                      | Name of the secret containting server certs, must match values file  | `"etcd-server-tls"`                              |
+| `GEN_KUBERNETES_SECRET_PEER`                        | Name of the secret containting peer certs, must match values file    | `"etcd-peer-tls"`                                |
+| `GEN_KUBERNETES_SECRET_CLIENT`                      | Name of the secret containting client certs, must match values file  | `"etcd-client-tls"`                              |
+| `GEN_STATEFULSET_NAME`                              | Name of the statefulset you are deploying                            | `"etcd-vault-etcd"`                              |
+| `GEN_NAMESPACE`                                     | Namespaces of your deployment                                        | `"" `                                            |
+| `GEN_CLIENT_NAMESPACES`                             | Space separated list of namespaces of clients that needs etcd certs. | `""`                                             |
+| `GEN_HOSTS_SERVER`                                  | Init hosts for the server certificate (probably wont need to change) | `"127.0.0.1"`                                    |
+| `GEN_HOSTS_CLIENT`                                  | Init hosts for the client certificate (probably wont need to change) | `"127.0.0.1"`                                    |
 
 You will then run the following command:
 
