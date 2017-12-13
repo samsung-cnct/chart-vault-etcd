@@ -1,6 +1,7 @@
 rbac:
   create: true
   apiVersion: v1beta1
+  serviceAccountName: vault-etcd-sa
 
 image:
   source: "quay.io/coreos/etcd"

@@ -17,7 +17,9 @@ helm delete --purge etcd
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| component                                         | Name to use for the component                                        | "etcd"                                         |
+| rbac.create                                       | Install rbac resources                                               | true                                           |
+| rbac.apiVersion                                   | Define the version of rbac resources to use.                         | "v1beta1"                                      |
+| image.serviceAccountName                          | Name of the service account resource when rbac is enabled            | "vault-etcd-sa"                          |
 | image.source                                      | Docker Image to use for etcd, should have etcd and etcdctl.          | "quay.io/coreos/etcd"                          |
 | image.tag                                         | Version of the docker image to use.                                  | "v3.2.9"                                       |
 | image.pullPolicy                                  | Pull policy for the docker image.                                    | "Always"                                       |
