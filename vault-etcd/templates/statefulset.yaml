@@ -6,7 +6,6 @@ metadata:
   labels:
     app: {{ template "vault-etcd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -18,15 +17,16 @@ spec:
     metadata:
       name: {{ template "vault-etcd.fullname" . }}
       labels:
-        app: {{ template "vault-etcd.fullname" . }}
+        app: {{ template "vault-etcd.name" . }}
         release: {{ .Release.Name }}
-        component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ template "vault-etcd.fullname" . }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.service.terminationGracePeriodSeconds }}
       containers:
       - name: {{ template "vault-etcd.fullname" . }}

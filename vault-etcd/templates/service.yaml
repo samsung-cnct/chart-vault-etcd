@@ -8,7 +8,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
@@ -19,4 +18,5 @@ spec:
     name: etcd-client
   clusterIP: None
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    app: {{ template "vault-etcd.name" .}}
+    release: {{ .Release.Name }}

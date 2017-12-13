@@ -3,13 +3,12 @@
 apiVersion: rbac.authorization.k8s.io/{{.Values.rbac.apiVersion }}
 kind: ClusterRoleBinding
 metadata:
+  name: {{ template "vault-etcd.fullname" . }}
   labels:
     app: {{ template "vault-etcd.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.component }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "vault-etcd.fullname" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "vault-etcd.fullname" . }}
