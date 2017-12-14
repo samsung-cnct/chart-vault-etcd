@@ -10,18 +10,11 @@ variables:
   HELM_REGISTRY_IMAGE: quay.io/samsung_cnct/helm-registry-agent
   HELM_REGISTRY_VERSION: v0.7.4-helm_2.6
   KUBECTL_VERSION: v1.8.5
-  NAMESPACE: ${APP_NAME}-test-${CI_PIPELINE_ID}
-  RELEASE: ${APP_NAME}-${CI_PIPELINE_ID}
-  DEPLOYMENT: ${APP_NAME}-${CI_PIPELINE_ID}-${APP_NAME}
 
 before_script:
   - helm registry login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_HOST}
   - export CHART_VER=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
   - export CHART_REL=$(git rev-list --count v${CHART_VER}..HEAD 2>/dev/null )
-
-after_script:
-  - helm delete --purge ${RELEASE}
-  - kubectl delete namespace ${NAMESPACE}
 
 stages:
   - build
@@ -40,12 +33,17 @@ build:
 test:
   image: quay.io/samsung_cnct/kraken-tools:v0.8
   stage: test
+  variables:
+    NAMESPACE: ${APP_NAME}-test-${CI_PIPELINE_ID}
+    RELEASE: ${APP_NAME}-${CI_PIPELINE_ID}
+    DEPLOYMENT: ${APP_NAME}-${CI_PIPELINE_ID}-${APP_NAME}
   before_script:
   - mkdir /root/.kube
   - echo ${TEST_KUBECONFIG} | base64 -d > /root/.kube/config
   - helm init
   - helm delete --purge ${RELEASE} || /bin/echo "${RELEASE} does not exist. Environment is clean."
   - kubectl delete namespace ${NAMESPACE} || /bin/echo "${NAMESPACE} does not exist. Environment is clean."
+
   script:
   - build/test.sh
   - helm install --name ${RELEASE} --namespace ${NAMESPACE} ${APP_NAME}
