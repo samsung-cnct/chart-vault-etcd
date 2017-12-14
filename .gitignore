@@ -33,6 +33,12 @@ docs/_build/
 *.iml
 *.iws
 
+# ignore test Chart.yaml
+vault-etcd/Chart.yaml
+
+# ignore the certs generation piece
+etcd-certs
+
 # Mac
 .DS_Store
 

@@ -44,8 +44,8 @@ test:
   - mkdir /root/.kube
   - echo ${TEST_KUBECONFIG} | base64 -d > /root/.kube/config
   - helm init
-  - helm delete --purge ${RELEASE} || /bin/echo "${RELEASE} does not exist. This is good."
-  - kubectl delete namespace ${NAMESPACE} || /bin/echo "${NAMESPACE} does not exist. This is good."
+  - helm delete --purge ${RELEASE} || /bin/echo "${RELEASE} does not exist. Environment is clean."
+  - kubectl delete namespace ${NAMESPACE} || /bin/echo "${NAMESPACE} does not exist. Environment is clean."
   script:
   - build/test.sh
   - helm install --name ${RELEASE} --namespace ${NAMESPACE} ${APP_NAME}
