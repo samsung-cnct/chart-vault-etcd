@@ -275,11 +275,12 @@ done
 # client certs
 inf "generating client certs..."
 inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | cfssljson -bare client"
+CLIENT_HOSTNAMES="${GEN_HOSTS_CLIENT},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}"
 cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
-    -hostname=${GEN_HOSTS_CLIENT} \
+    -hostname=${CLIENT_HOSTNAMES} \
     -profile=client client.json | cfssljson -bare client
 
 
