@@ -1,3 +1,4 @@
+---
 rbac:
   create: true
   apiVersion: v1beta1
