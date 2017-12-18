@@ -253,6 +253,7 @@ fi
 # server certs
 inf "generating server certs..."
 inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client server.json | cfssljson -bare server"
+SERVER_HOSTNAMES="${GEN_HOSTS_SERVER},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}"
 cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
@@ -264,11 +265,12 @@ cfssl gencert \
 for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
     inf "generating peer cert: ${GEN_STATEFULSET_NAME}-${i} ..."
     inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}"
+    PEER_HOSTNAMES="${GEN_STATEFULSET_NAME}-${i},${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE},127.0.0.1"
     cfssl gencert \
         -ca=ca.pem \
         -ca-key=ca-key.pem \
         -config=ca-config.json \
-        -hostname="${GEN_STATEFULSET_NAME}-${i}","${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME}","127.0.0.1" \
+        -hostname=${PEER_HOSTNAMES} \
         -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}
 done
 
