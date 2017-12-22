@@ -32,8 +32,8 @@ if [ -n "${TLS_ENABLED}+x" ] && [ "${TLS_ENABLED}" = true ]; then
     FLAGS_TLS_OPTIONS="""
         --client-cert-auth \
         --trusted-ca-file=${CERTS_SERVER_PATH}/ca.pem \
-        --cert-file=${CERTS_SERVER_PATH}/server.pem \
-        --key-file=${CERTS_SERVER_PATH}/server-key.pem \
+        --cert-file=${CERTS_SERVER_PATH}/etcd-server.pem \
+        --key-file=${CERTS_SERVER_PATH}/etcd-server-key.pem \
         --peer-client-cert-auth \
         --peer-trusted-ca-file=${CERTS_PEER_PATH}/ca.pem \
         --peer-cert-file=${CERTS_PEER_PATH}/${HOSTNAME}.pem \
