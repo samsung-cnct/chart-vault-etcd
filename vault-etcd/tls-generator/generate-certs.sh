@@ -173,7 +173,7 @@ EOF
 fi
 
 # Server CSR
-cat <<EOF > server.json
+cat <<EOF > etcd-server.json
 {
     "CN": "etcd-server",
     "hosts": [""],
@@ -194,7 +194,7 @@ cat <<EOF > server.json
 EOF
 
 # Client CSR
-cat <<EOF > client.json
+cat <<EOF > etcd-client.json
 {
     "CN": "etcd-client",
     "hosts": [""],
@@ -259,7 +259,7 @@ cfssl gencert \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
     -hostname=${GEN_HOSTS_SERVER} \
-    -profile=client server.json | cfssljson -bare server
+    -profile=client etcd-server.json | cfssljson -bare etcd-server
 
 # peer certs
 for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
@@ -283,8 +283,7 @@ cfssl gencert \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
     -hostname=${CLIENT_HOSTNAMES} \
-    -profile=client client.json | cfssljson -bare client
-
+    -profile=client etcd-client.json | cfssljson -bare etcd-client
 
 # clean out old secrets
 inf "removing old secrets..."
@@ -295,6 +294,7 @@ kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_SERVER_SECRET_NAME} || true
 inf "... removing from namespaces: ${GEN_NAMESPACE}, secret: ${GEN_CLIENT_SECRET_NAME}"
 kubectl -n ${GEN_NAMESPACE} delete secret ${GEN_CLIENT_SECRET_NAME} || true
 inf "... removing client secrets..."
+
 for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
     inf "... removing from namespaces: ${ns}, secret: ${GEN_CLIENT_SECRET_NAME}"
     kubectl -n ${ns} delete secret ${GEN_CLIENT_SECRET_NAME} || true
@@ -315,21 +315,21 @@ kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_PEER_SECRET_NAME} \
     ${GEN_PEER_CERTS}  || true
 
 inf "kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
-    --from-file=ca.pem --from-file=server.pem --from-file=server-key.pem"
+    --from-file=ca.pem --from-file=etcd-server.pem --from-file=etcd-server-key.pem"
 warn "if namespaces does not exist, secret creation will be skipped"
 
 kubectl -n ${GEN_NAMESPACE} create secret generic ${GEN_SERVER_SECRET_NAME} \
     --from-file=ca.pem \
-    --from-file=server.pem \
-    --from-file=server-key.pem || true
+    --from-file=etcd-server.pem \
+    --from-file=etcd-server-key.pem || true
 
 for ns in "${GEN_CLIENT_NAMESPACES[@]}"; do
 inf "kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
-    --from-file=ca.pem --from-file=client.pem --from-file=client-key.pem"
+    --from-file=ca.pem --from-file=etcd-client.pem --from-file=etcd-client-key.pem"
 warn "if namespaces does not exist, secret creation will be skipped"
 
 kubectl -n ${ns} create secret generic ${GEN_CLIENT_SECRET_NAME} \
     --from-file=ca.pem \
-    --from-file=client.pem \
-    --from-file=client-key.pem || true
+    --from-file=etcd-client.pem \
+    --from-file=etcd-client-key.pem || true
 done
