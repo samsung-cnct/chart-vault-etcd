@@ -81,6 +81,11 @@ if [ -z ${GEN_STATEFULSET_NAME+x} ]; then
     GEN_STATEFULSET_NAME="etcd-vault-etcd"
 fi
 
+# statefulset name
+if [ -z ${GEN_CLUSTER_DOMAIN+x} ]; then
+    GEN_CLUSTER_DOMAIN="cluster.local"
+fi
+
 function checkPREREQS() {
     PRE_REQS="cfssljson cfssl"
 
@@ -108,6 +113,7 @@ if [ ! -d "$DIR_PATH" ]; then
     mkdir -p $DIR_PATH
 fi
 
+echo $DIR_PATH
 cd $DIR_PATH
 
 if [[ ! -e ca-key.pem ]]; then
@@ -252,20 +258,20 @@ fi
 
 # server certs
 inf "generating server certs..."
-inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client server.json | cfssljson -bare server"
-SERVER_HOSTNAMES="${GEN_HOSTS_SERVER},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}"
+SERVER_HOSTNAMES="${GEN_HOSTS_SERVER},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}.svc.${GEN_CLUSTER_DOMAIN}"
+inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname=${SERVER_HOSTNAMES} -profile=client etcd-server.json | cfssljson -bare etcd-server"
 cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
     -config=ca-config.json \
-    -hostname=${GEN_HOSTS_SERVER} \
+    -hostname=${SERVER_HOSTNAMES} \
     -profile=client etcd-server.json | cfssljson -bare etcd-server
 
 # peer certs
 for ((i = 0; i < GEN_CLUSTER_SIZE; i++)); do
     inf "generating peer cert: ${GEN_STATEFULSET_NAME}-${i} ..."
-    inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}"
     PEER_HOSTNAMES="${GEN_STATEFULSET_NAME}-${i},${GEN_STATEFULSET_NAME}-${i}.${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE},127.0.0.1"
+    inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname=${PEER_HOSTNAMES} -profile=client ${GEN_STATEFULSET_NAME}-${i}.json | cfssljson -bare ${GEN_STATEFULSET_NAME}-${i}"
     cfssl gencert \
         -ca=ca.pem \
         -ca-key=ca-key.pem \
@@ -276,8 +282,8 @@ done
 
 # client certs
 inf "generating client certs..."
-inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | cfssljson -bare client"
-CLIENT_HOSTNAMES="${GEN_HOSTS_CLIENT},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}"
+CLIENT_HOSTNAMES="${GEN_HOSTS_CLIENT},${GEN_STATEFULSET_NAME},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE},${GEN_STATEFULSET_NAME}.${GEN_NAMESPACE}.svc.${GEN_CLUSTER_DOMAIN}"
+inf "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client -hostname=${CLIENT_HOSTNAMES} etcd-client.json | cfssljson -bare etcd-client"
 cfssl gencert \
     -ca=ca.pem \
     -ca-key=ca-key.pem \
