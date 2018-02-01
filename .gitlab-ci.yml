@@ -36,7 +36,7 @@ test:
   variables:
     NAMESPACE: ${APP_NAME}-test-${CI_PIPELINE_ID}
     RELEASE: ${APP_NAME}-${CI_PIPELINE_ID}
-    DEPLOYMENT: ${APP_NAME}-${CI_PIPELINE_ID}-${APP_NAME}
+    STATEFULSET: etcd-vault
   before_script:
   - mkdir /root/.kube
   - echo ${TEST_KUBECONFIG} | base64 -d > /root/.kube/config
@@ -47,7 +47,7 @@ test:
   script:
   - build/test.sh
   - helm install --name ${RELEASE} --namespace ${NAMESPACE} ${APP_NAME}
-  - kubectl rollout status sts/${DEPLOYMENT} -n ${NAMESPACE}
+  - kubectl rollout status sts/${STATEFULSET} -n ${NAMESPACE}
   - helm delete --purge ${RELEASE}
   - kubectl delete namespace ${NAMESPACE}
 
