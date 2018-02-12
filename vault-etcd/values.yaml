@@ -10,7 +10,7 @@ image:
   pullPolicy: "Always"
 
 service:
-  name: etcdvault
+  name: etcd-vault
   peerPort: 2380
   clientPort: 2379
   replicas: 3

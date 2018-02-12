@@ -78,7 +78,7 @@ fi
 
 # statefulset name
 if [ -z ${GEN_STATEFULSET_NAME+x} ]; then
-    GEN_STATEFULSET_NAME="etcd-vault-etcd"
+    GEN_STATEFULSET_NAME="etcd-vault"
 fi
 
 # statefulset name
