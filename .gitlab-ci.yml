@@ -5,7 +5,7 @@ variables:
   REGISTRY_HOST: quay.io
   REGISTRY_ORG: samsung_cnct
   CHART_NAME: vault-etcd
-  REGISTRY_CHART_NAME: cyklops-vault-etcd
+  REGISTRY_CHART_NAME: vault-etcd
   CHART_REGISTRY_URI: ${REGISTRY_HOST}/${REGISTRY_ORG}/${REGISTRY_CHART_NAME}
   HELM_REGISTRY_IMAGE: quay.io/samsung_cnct/helm-registry-agent
   HELM_REGISTRY_VERSION: v0.7.4-helm_2.6
@@ -48,7 +48,7 @@ test:
   - build/test.sh
   - helm install --name ${RELEASE} --namespace ${NAMESPACE} ${APP_NAME}
   - kubectl rollout status sts/${STATEFULSET} -n ${NAMESPACE}
-  - helm delete --purge ${RELEASE}
+  - helm delete --purge ${RELEASE} || true
   - kubectl delete namespace ${NAMESPACE}
 
 # beta channel is for internal tested release candidates
