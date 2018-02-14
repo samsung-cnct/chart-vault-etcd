@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  serviceName: {{ template "vault-etcd.fullname" . }}
+  serviceName: {{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}
   replicas: {{ default 3 .Values.service.replicas }}
   updateStrategy:
     type: RollingUpdate
@@ -45,7 +45,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.service.replicas | quote }}
         - name: STATEFULSET_NAME
-          value: {{ template "vault-etcd.fullname" . }}
+          value: {{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}
         - name: DATA_DIR
           value: {{ .Values.service.dataDir | quote }}
         - name: PEER_PORT
