@@ -1,0 +1,18 @@
+type: chart
+configs:
+  - chart: vault-etcd
+    timeout: 600
+    retries: 2
+    release: etcd-vault
+    test: 
+      values:
+        - key: service.tls.enable
+          secret: true
+test:
+  beforeScript:
+    script: scripts/beforeTest.sh
+    shell: /bin/bash
+prod: 
+  doDeploy: none
+
+ 
