@@ -11,7 +11,7 @@ configs:
 test:
   beforeScript:
     script: scripts/beforeTest.sh
-    shell: /bin/bash
+    shell: /usr/local/bin/bash
 prod: 
   doDeploy: none
 
