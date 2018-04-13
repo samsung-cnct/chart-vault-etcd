@@ -30,8 +30,8 @@ export GEN_STATEFULSET_NAME="etcd-vault"
 export GEN_CLUSTER_DOMAIN="cluster.local"
 
 # create the namespace
-echo "Creating namespace etcd-${PIPELINE_BUILD_ID}"
-kubectl create namespace etcd-${PIPELINE_BUILD_ID}
+echo "Creating namespace ${GEN_NAMESPACE}"
+kubectl create namespace ${GEN_NAMESPACE}
 
 # generate tls secrets for vault in GEN_NAMESPACE
 echo "Generating etcd TLS certificates"
