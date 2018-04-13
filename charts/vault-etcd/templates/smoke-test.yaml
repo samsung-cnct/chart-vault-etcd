@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-smoke-test"
+  labels:
+    app: smoke-test
+    release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: smoke-test
+    image: "{{.Values.image.source}}:{{.Values.image.tag}}"
+    imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+    {{- if .Values.service.tls.enable }}
+    volumeMounts:
+    - name: {{ .Values.service.tls.clientSecret.name }}
+      mountPath: {{ .Values.service.tls.clientSecret.path }}
+      readOnly: true
+    {{- end }}
+    env:
+    - name: SCRIPT
+      value: &testEtcd |-
+        #!/bin/sh
+        apk add --no-cache curl
+
+        {{- if .Values.service.tls.enable }}
+        until curl --connect-timeout 1 --cert {{ .Values.service.tls.clientSecret.path }}/etcd-client.pem --cert-type PEM --key {{ .Values.service.tls.clientSecret.path }}/etcd-client-key.pem --key-type PEM --cacert {{ .Values.service.tls.clientSecret.path }}/ca.pem https://{{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}:{{ .Values.service.clientPort }}/v2/machines; do sleep 2; done
+        {{- else }}
+        until curl --connect-timeout 1 http://{{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}:{{ .Values.service.clientPort }}/v2/machines; do sleep 2; done
+        {{- end }}
+
+        exit 0;
+    command: [ "/bin/sh" ]
+    args: ["-c", *testEtcd]
+  restartPolicy: Never
+  volumes:
+  {{- if .Values.service.tls.enable }}
+  - name: {{ .Values.service.tls.clientSecret.name }}
+    secret:
+      secretName: {{ .Values.service.tls.clientSecret.name }}
+  {{- end }}

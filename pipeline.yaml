@@ -1,0 +1,21 @@
+type: chart
+envValues:
+  - envVar: KUBECTL_VERSION
+    value: v1.9.2
+configs:
+  - chart: vault-etcd
+    timeout: 600
+    retries: 2
+    release: etcd-vault
+    test: 
+      values:
+        - key: service.tls.enable
+          value: true
+test:
+  beforeScript:
+    script: scripts/beforeTest.sh
+    shell: /usr/local/bin/bash
+prod: 
+  doDeploy: none
+
+ 
