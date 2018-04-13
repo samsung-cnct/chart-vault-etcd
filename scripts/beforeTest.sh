@@ -7,7 +7,7 @@ mkdir /go
 export PATH=$PATH:/usr/local/go/bin:/go/bin
 export GOPATH=/go
 mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
-apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev
+apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev git curl
 
 # setup cloudflare ssl
 echo "Setting up cloudflare SSL tools"
