@@ -21,13 +21,13 @@ chmod +x ./kubectl
 mv ./kubectl /usr/local/bin/kubectl
 
 # setup tls for etcd
-GEN_CLUSTER_SIZE=3
-GEN_NAMESPACE="etcd-${PIPELINE_BUILD_ID}"
-GEN_SERVER_SECRET_NAME="etcd-server-tls"
-GEN_PEER_SECRET_NAME="etcd-peer-tls"
-GEN_CLIENT_SECRET_NAME="etcd-client-tls"
-GEN_STATEFULSET_NAME="etcd-vault"
-GEN_CLUSTER_DOMAIN="cluster.local"
+export GEN_CLUSTER_SIZE=3
+export GEN_NAMESPACE="etcd-${PIPELINE_BUILD_ID}"
+export GEN_SERVER_SECRET_NAME="etcd-server-tls"
+export GEN_PEER_SECRET_NAME="etcd-peer-tls"
+export GEN_CLIENT_SECRET_NAME="etcd-client-tls"
+export GEN_STATEFULSET_NAME="etcd-vault"
+export GEN_CLUSTER_DOMAIN="cluster.local"
 
 # create the namespace
 echo "Creating namespace etcd-${PIPELINE_BUILD_ID}"
