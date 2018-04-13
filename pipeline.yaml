@@ -1,4 +1,7 @@
 type: chart
+envValues:
+  - envVar: KUBECTL_VERSION
+    value: v1.9.2
 configs:
   - chart: vault-etcd
     timeout: 600
