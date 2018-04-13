@@ -27,7 +27,7 @@ spec:
 
         apk update && apk add curl
 
-        {{- if .Values.vault.etcdBackend.tls.enabled }}
+        {{- if .Values.service.tls.enable }}
         until curl --connect-timeout 1 --cert {{ .Values.service.tls.clientSecret.path }}/etcd-client.pem --cert-type PEM --key {{ .Values.service.tls.clientSecret.path }}/etcd-client-key.pem --key-type PEM --cacert {{ .Values.service.tls.clientSecret.path }}/ca.pem https://{{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}:{{ .Values.service.clientPort }}/v2/machines; do sleep 2; done
         {{- else }}
         until curl --connect-timeout 1 http://{{ .Values.service.name | default (include "vault-etcd.fullname" . ) }}:{{ .Values.service.clientPort }}/v2/machines; do sleep 2; done
