@@ -10,7 +10,7 @@ configs:
     test: 
       values:
         - key: service.tls.enable
-          secret: true
+          value: true
 test:
   beforeScript:
     script: scripts/beforeTest.sh
