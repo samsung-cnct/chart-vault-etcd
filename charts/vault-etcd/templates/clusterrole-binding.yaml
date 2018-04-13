@@ -6,7 +6,7 @@ metadata:
   name: {{ template "vault-etcd.fullname" . }}
   labels:
     app: {{ template "vault-etcd.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 subjects:
