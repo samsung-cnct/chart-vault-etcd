@@ -22,8 +22,6 @@ spec:
     - name: SCRIPT
       value: &testEtcd |-
         #!/bin/sh
-
-        printenv
         apk add --no-cache curl
 
         {{- if .Values.service.tls.enable }}
