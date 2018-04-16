@@ -110,7 +110,6 @@ prod:
   beforeScript:
     script: scripts/beforeProd.sh
     shell: /usr/local/bin/bash
-prod: 
   doDeploy: auto
 
  
