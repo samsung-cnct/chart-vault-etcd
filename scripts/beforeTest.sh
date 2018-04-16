@@ -31,7 +31,7 @@ export GEN_CLUSTER_DOMAIN="cluster.local"
 
 # create the namespace
 echo "Creating namespace ${GEN_NAMESPACE}"
-kubectl create namespace ${GEN_NAMESPACE}
+kubectl create namespace ${GEN_NAMESPACE} || true
 
 # generate tls secrets for vault in GEN_NAMESPACE
 echo "Generating etcd TLS certificates"
