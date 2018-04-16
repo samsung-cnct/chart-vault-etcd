@@ -4,10 +4,8 @@ if kubectl get secret etcd-client-tls -n staging; then
   exit 0;
 fi
 
-# setup cloudflare ssl
-echo "Setting up cloudflare SSL tools"
-go get -u github.com/cloudflare/cfssl/cmd/cfssl
-go get -u github.com/cloudflare/cfssl/cmd/cfssljson
+export PATH=$PATH:/usr/local/go/bin:/go/bin
+export GOPATH=/go
 
 # setup tls for etcd
 export GEN_CLUSTER_SIZE=3
