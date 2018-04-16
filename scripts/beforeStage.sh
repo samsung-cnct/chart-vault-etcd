@@ -1,17 +1,5 @@
 #! /usr/local/bin/bash -ex
 # setup golang
-
-# setup kubectl
-echo "Setting up kubectl"
-wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-mv ./kubectl /usr/local/bin/kubectl
-
-# don't regenerate secrets for staging if they are already present
-if kubectl get secret etcd-client-tls -n staging; then
-  exit 0;
-fi
-
 echo "Setting up golang"
 wget https://redirector.gvt1.com/edgedl/go/go1.9.2.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
@@ -25,6 +13,17 @@ apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev git c
 echo "Setting up cloudflare SSL tools"
 go get -u github.com/cloudflare/cfssl/cmd/cfssl
 go get -u github.com/cloudflare/cfssl/cmd/cfssljson
+
+# setup kubectl
+echo "Setting up kubectl"
+wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mv ./kubectl /usr/local/bin/kubectl
+
+# don't regenerate secrets for staging if they are already present
+if kubectl get secret etcd-client-tls -n staging; then
+  exit 0;
+fi
 
 
 # setup tls for etcd

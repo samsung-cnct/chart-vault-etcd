@@ -6,7 +6,7 @@ configs:
   - chart: vault-etcd
     timeout: 600
     retries: 2
-    release: etcd-vault
+    release: etcd
     test: 
       values:
         - key: service.tls.enable
@@ -98,6 +98,9 @@ configs:
 test:
   beforeScript:
     script: scripts/beforeTest.sh
+    shell: /usr/local/bin/bash
+  afterScript:
+    script: scripts/afterTest.sh
     shell: /usr/local/bin/bash
 stage:
   beforeScript:
