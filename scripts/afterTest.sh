@@ -1,4 +1,4 @@
 #! /usr/local/bin/bash -ex
 # clean up the namespace
-echo "Cleaning up namespace etcd-${PIPELINE_BUILD_ID}"
-kubectl delete namespace etcd-vault-${PIPELINE_BUILD_ID} || true
+echo "Cleaning up namespace ${PIPELINE_TEST_NAMESPACE}"
+kubectl delete namespace ${PIPELINE_TEST_NAMESPACE} || true
