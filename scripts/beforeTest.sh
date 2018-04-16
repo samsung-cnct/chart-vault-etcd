@@ -3,10 +3,10 @@
 echo "Setting up golang"
 wget https://redirector.gvt1.com/edgedl/go/go1.9.2.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
-mkdir /go
+mkdir -p /go
 export PATH=$PATH:/usr/local/go/bin:/go/bin
 export GOPATH=/go
-mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+mkdir -p /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev git curl
 
 # setup cloudflare ssl
