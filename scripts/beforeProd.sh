@@ -4,6 +4,11 @@ if kubectl get secret etcd-client-tls -n prod; then
   exit 0;
 fi
 
+# setup cloudflare ssl
+echo "Setting up cloudflare SSL tools"
+go get -u github.com/cloudflare/cfssl/cmd/cfssl
+go get -u github.com/cloudflare/cfssl/cmd/cfssljson
+
 # setup tls for etcd
 export GEN_CLUSTER_SIZE=3
 export GEN_NAMESPACE="prod"
