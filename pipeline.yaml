@@ -6,16 +6,111 @@ configs:
   - chart: vault-etcd
     timeout: 600
     retries: 2
-    release: etcd-vault
+    release: etcd
     test: 
       values:
         - key: service.tls.enable
           value: true
+    stage:
+      values:
+        - key: rbac.create
+          value: true
+        - key: rbac.apiVersion
+          value: v1beta1
+        - key: rbac.serviceAccountName
+          value: vault-etcd-sa
+        - key: service.name
+          value: etcd-vault
+        - key: service.peerPort
+          value: 2380
+        - key: service.clientPort
+          value: 2379
+        - key: service.cpu
+          value: "100m"
+        - key: service.memory
+          value: "512Mi"
+        - key: service.dataDir
+          value: "/ephemeral"
+        - key: service.terminationGracePeriodSeconds
+          value: 30
+        - key: storage.storageClass
+          value: "gp2"
+        - key: storage.size
+          value: 1Gi
+        - key: storage.mount
+          value: "ephemeral"
+        - key: tls.enable
+          value: true
+        - key: tls.serverSecret.name
+          value: etcd-server-tls
+        - key: tls.serverSecret.path
+          value: "/etcd/certs/server"
+        - key: tls.peerSecret.name
+          value: etcd-peer-tls
+        - key: tls.peerSecret.path
+          value: "/etcd/certs/peer"
+        - key: tls.clientSecret.name
+          value: etcd-client-tls
+        - key: tls.clientSecret.path
+          value: "/etcd/certs/client"
+    prod:
+      values:
+        - key: rbac.create
+          value: true
+        - key: rbac.apiVersion
+          value: v1beta1
+        - key: rbac.serviceAccountName
+          value: vault-etcd-sa
+        - key: service.name
+          value: etcd-vault
+        - key: service.peerPort
+          value: 2380
+        - key: service.clientPort
+          value: 2379
+        - key: service.cpu
+          value: "100m"
+        - key: service.memory
+          value: "512Mi"
+        - key: service.dataDir
+          value: "/ephemeral"
+        - key: service.terminationGracePeriodSeconds
+          value: 30
+        - key: storage.storageClass
+          value: "gp2"
+        - key: storage.size
+          value: 1Gi
+        - key: storage.mount
+          value: "ephemeral"
+        - key: tls.enable
+          value: true
+        - key: tls.serverSecret.name
+          value: etcd-server-tls
+        - key: tls.serverSecret.path
+          value: "/etcd/certs/server"
+        - key: tls.peerSecret.name
+          value: etcd-peer-tls
+        - key: tls.peerSecret.path
+          value: "/etcd/certs/peer"
+        - key: tls.clientSecret.name
+          value: etcd-client-tls
+        - key: tls.clientSecret.path
+          value: "/etcd/certs/client"
 test:
   beforeScript:
     script: scripts/beforeTest.sh
     shell: /usr/local/bin/bash
+  afterScript:
+    script: scripts/afterTest.sh
+    shell: /usr/local/bin/bash
+stage:
+  beforeScript:
+    script: scripts/beforeStage.sh
+    shell: /usr/local/bin/bash
+prod:
+  beforeScript:
+    script: scripts/beforeProd.sh
+    shell: /usr/local/bin/bash
 prod: 
-  doDeploy: none
+  doDeploy: auto
 
  

@@ -3,10 +3,10 @@
 echo "Setting up golang"
 wget https://redirector.gvt1.com/edgedl/go/go1.9.2.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
-mkdir /go
+mkdir -p /go
 export PATH=$PATH:/usr/local/go/bin:/go/bin
 export GOPATH=/go
-mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+mkdir -p /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 apk add --no-cache --virtual .build-deps gcc build-base libtool sqlite-dev git curl
 
 # setup cloudflare ssl
@@ -22,7 +22,7 @@ mv ./kubectl /usr/local/bin/kubectl
 
 # setup tls for etcd
 export GEN_CLUSTER_SIZE=3
-export GEN_NAMESPACE="etcd-vault-${PIPELINE_BUILD_ID}"
+export GEN_NAMESPACE="etcd-${PIPELINE_BUILD_ID}"
 export GEN_SERVER_SECRET_NAME="etcd-server-tls"
 export GEN_PEER_SECRET_NAME="etcd-peer-tls"
 export GEN_CLIENT_SECRET_NAME="etcd-client-tls"
