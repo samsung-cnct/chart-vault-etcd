@@ -22,7 +22,7 @@ mv ./kubectl /usr/local/bin/kubectl
 
 # setup tls for etcd
 export GEN_CLUSTER_SIZE=3
-export GEN_NAMESPACE="etcd-vault-${PIPELINE_BUILD_ID}"
+export GEN_NAMESPACE="etcd-${PIPELINE_BUILD_ID}"
 export GEN_SERVER_SECRET_NAME="etcd-server-tls"
 export GEN_PEER_SECRET_NAME="etcd-peer-tls"
 export GEN_CLIENT_SECRET_NAME="etcd-client-tls"
