@@ -1,6 +1,5 @@
----
 name: vault-etcd
-version: 0.0.6
+version: 0.0.8
 description: Sample chart template for registry
 keywords:
 - kraken
@@ -12,5 +11,5 @@ sources:
 maintainers:
 - name: Samsung CNCT
   email: samsung.cloudnative@gmail.com
-icon: null
+icon:
 engine: gotpl
