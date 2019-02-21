@@ -1,4 +1,4 @@
-# Cyklops Chart: etcd for vault
+# [Deprecated] Cyklops Chart: etcd for vault
 This repo contains a chart specific to Cycklops implementation of etcd to be consumed by vault.  
 
 ## Installing
